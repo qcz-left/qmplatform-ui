@@ -67,15 +67,19 @@
                 clearable>
               </el-input>
             </el-form-item>
-            <!--<el-form-item label="活动区域">
+            <el-form-item label="活动区域">
               <el-select placeholder="活动区域">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
               </el-select>
-            </el-form-item>-->
+            </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="getMenuList">查询</el-button>
-              <el-button type="danger">添加</el-button>
+              <el-button type="primary" @click="getMenuList" icon="el-icon-search">查询</el-button>
+              <el-button type="danger" icon="el-icon-plus">添加</el-button>
             </el-form-item>
           </el-form>
           <el-table
@@ -105,11 +109,11 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
-                  size="mini">编辑
+                  size="mini" icon="el-icon-edit">编辑
                 </el-button>
                 <el-button
                   size="mini"
-                  type="danger">删除
+                  type="danger" icon="el-icon-delete">删除
                 </el-button>
               </template>
             </el-table-column>
@@ -177,7 +181,24 @@
           date: '2016-05-07',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄'
-        }]
+        }],
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value : ''
       }
     },
     methods : {
