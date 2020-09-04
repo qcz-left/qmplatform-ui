@@ -68,7 +68,7 @@
               </el-input>
             </el-form-item>
             <el-form-item label="活动区域">
-              <el-select placeholder="活动区域">
+              <el-select v-model="value" placeholder="活动区域">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -198,7 +198,7 @@
           value: '选项5',
           label: '北京烤鸭'
         }],
-        value : ''
+        value: ''
       }
     },
     methods : {

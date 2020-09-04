@@ -6,13 +6,12 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8888/qmplatform',    //设置你调用的接口域名和端口号.别忘了加http
+        target: 'http://localhost:9001/',    //设置你调用的接口域名和端口号.别忘了加http
         changeOrigin: true,   //允许跨域
         pathRewrite: {
           '^/api': ''
