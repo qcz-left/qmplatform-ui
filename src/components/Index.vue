@@ -203,7 +203,11 @@
     },
     methods : {
       getMenuList() {
-        this.$axios.get("/sys/user/test", {}).then(function (resp) {
+        this.$axios.get("/system/user/getUserList", {
+          params: {
+            access_token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAwMDY5NTQsInVzZXJfbmFtZSI6InVzZXJfMSIsImF1dGhvcml0aWVzIjpbInRlc3QiXSwianRpIjoiNTUxMjkyMjEtNWNiYi00NWVmLWIwOGItZGVhZjZiNjY0NmNkIiwiY2xpZW50X2lkIjoiY2xpZW50XzEiLCJzY29wZSI6WyJhbGwiXX0.TFfcn_crMdeMEo_SLaNngR4dJDDIiYRT5f3VdOpnCkCTnDAEMPmiXkGMTL5QF15O94vCvFedpLro7gBkwsQSHtTKOYjLPhMLBKLHL6VHFzJS8GDT9CgsPShCopEJ6PPG8sdTXFN3o3rk4VIZ8xAaVM3Yoek_TGQMFqwwFVFrJ2rTO6ypVbPNsdLOCwx7V7HpbtrigHOwiwSnDqq7QS72RJ8e9pnDX9j1gfNZKpOghJYE_WATkScOJQovkTcRqAsdhulrCDA4-M46LvcPv4UPOJU_CrmfslDB6BXVsEdAEi_ILXMClNw56RIkhWFHAKEBjfDUYT5EZbwdJI2hJO5bLw'
+          }
+        }).then(function (resp) {
           console.log(resp)
         })
       }

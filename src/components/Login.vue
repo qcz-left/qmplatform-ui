@@ -30,13 +30,10 @@
     methods: {
       loginSubmit: function () {
         var $this = this;
-        this.$axios.get("/service-auth/oauth/token", {
+        this.$axios.get("/oauth2/oauth/token", {
           params:{
-            grant_type: 'password',
             username: vmData.loginName,
-            password: vmData.loginPassword,
-            client_id: 'client_1',
-            client_secret: '123456'
+            password: vmData.loginPassword
           }
         }).then(function (resp) {
           var result = resp.data;
