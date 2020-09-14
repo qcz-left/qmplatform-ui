@@ -1,188 +1,119 @@
 <template>
-  <div id="app">
-    <div class="main-agileits">
-      <h2 class="sub-agileits-w3layouts">登录系统</h2>
-      <form id="login-form" action="javascript:;" type="post">
-        <input type="text" name="loginName" v-model="loginName" placeholder="用户名" autocomplete="new-password"></input>
-        <input type="password" name="loginPassword" v-model="loginPassword" placeholder="密码" autocomplete="new-password"></input>
-        <a href="#" class="forgot-w3layouts">忘记密码 ?</a>
-        <div class="submit-w3l">
-          <input type="submit" @click="loginSubmit" value="登录">
-        </div>
-        <p class="p-bottom-w3ls">
-          <a href="/#/login">这里注册</a>如果你还没有一个账号.
-        </p>
-      </form>
+  <div class="login_container">
+    <div class="login_box">
+      <!-- 头像区域 -->
+      <div class="avatar_box">
+        <img src="../assets/logo.png" alt="">
+      </div>
+      <!-- 登录表单区域 -->
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
+        <!-- 用户名 -->
+        <el-form-item prop="username">
+          <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
+        </el-form-item>
+        <!-- 密码 -->
+        <el-form-item prop="password">
+          <el-input v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password"></el-input>
+        </el-form-item>
+        <!-- 按钮区域 -->
+        <el-form-item class="btns">
+          <el-button type="primary" @click="loginSubmit">登录</el-button>
+          <el-button type="info" @click="resetLoginForm">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
 <script>
-  var vmData = {
-    loginName: '',
-    loginPassword: ''
-  };
   export default {
-    name: "Login.vue",
     data() {
-      return vmData;
+      return {
+        loginForm: {
+          username: 'user_1',
+          password: '123456'
+        },
+        // 这是表单的验证规则对象
+        loginFormRules: {
+          // 验证用户名是否合法
+          username: [
+            {required: true, message: '请输入登录名称', trigger: 'blur'},
+            {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+          ],
+          // 验证密码是否合法
+          password: [
+            {required: true, message: '请输入登录密码', trigger: 'blur'},
+            {min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur'}
+          ]
+        }
+      };
     },
     methods: {
-      loginSubmit: function () {
-        var $this = this;
-        this.$axios.get("/oauth2/oauth/token", {
-          params:{
-            username: vmData.loginName,
-            password: vmData.loginPassword
+      // 点击重置按钮，重置登录表单
+      resetLoginForm() {
+        this.$refs.loginFormRef.resetFields()
+      },
+      loginSubmit() {
+        this.$axios.get('/oauth2/login', {params: this.loginForm}).then(res => {
+          let data = res.data;
+          if (data.code !== 200) {
+            return this.$message.error('用户名或密码不正确！')
           }
-        }).then(function (resp) {
-          var result = resp.data;
-          if (result.access_token) {
-            top.location.href = "/";
-          }
-        }).catch(function (err) {
-          var errData = err.response.data;
-          var errorCode = errData.error;
-          var errMsg = null;
-          switch (errorCode) {
-            case "unauthorized":
-              errMsg = "账号不存在！";
-              break;
-            case "invalid_grant":
-              errMsg = "密码输入错误，请重新输入！";
-              break;
-          }
-          $this.$message({
-            showClose: true,
-            message: errMsg,
-            type: 'error'
-          });
-        })
+          window.sessionStorage.setItem('token', data.data.accessToken);
+          this.$router.push('/');
+        });
       }
     }
   }
 </script>
 
-<style scoped>
-  #app {
-    overflow: hidden;
-    background: url("../assets/login.png");
-    background-repeat: round;
+<style lang="less" scoped>
+  .login_container {
+    background-color: #2b4b6b;
+    height: 100%;
   }
 
-  .main-agileits {
-    width: 30%;
-    margin: 0 auto;
-    margin-top: 10%;
-    background: rgba(9, 9, 9, 0.46);
-    box-shadow: 0px 35px 44px -22px #1f181b;
-    padding: 60px 40px;
+  .login_box {
+    width: 450px;
+    height: 300px;
+    background-color: #fff;
+    border-radius: 3px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    .avatar_box {
+      height: 130px;
+      width: 130px;
+      border: 1px solid #eee;
+      border-radius: 50%;
+      padding: 10px;
+      box-shadow: 0 0 10px #ddd;
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #eee;
+      }
+    }
   }
 
-  h2.sub-agileits-w3layouts, h3.sub-agileits-w3layouts {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 2em;
-    letter-spacing: 2px;
-  }
-
-  .main-agileits input[type="text"], .main-agileits input[type="password"], .main-agileits input[type="email"] {
-    outline: none;
-    font-size: 15px;
-    color: #ffffff;
-    text-align: left;
-    padding: 12px 14px;
-    width: 95.5%;
-    border: none;
-    border-bottom: 1px solid #dadfe0;
-    -webkit-appearance: none;
-    margin-bottom: 30px;
-    background: transparent;
-    letter-spacing: 1px;
-  }
-
-  a.forgot-w3layouts {
-    text-align: center;
-    text-decoration: none;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: capitalize;
-    color: #fff;
-  }
-
-  .submit-w3l {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-  }
-
-  .submit-w3l input[type="submit"]:hover {
-    background: #df5799;
-    color: #ffffff;
-    transition: 0.3s all;
-    -webkit-transition: 0.3s all;
-    -moz-transition: 0.3s all;
-    -o-transition: 0.3s all;
-    -ms-transition: 0.3s all;
-  }
-
-  .submit-w3l input[type="submit"] {
-    background: #fff;
-    color: #000;
-    outline: none;
-    display: block;
-    margin: 0 auto;
-    border: none;
-    cursor: pointer;
-    padding: 13px 38px;
-    font-size: 14px;
+  .login_form {
+    position: absolute;
+    bottom: 0;
     width: 100%;
-    margin-top: 1em;
-    font-weight: bold;
-    text-transform: uppercase;
-    transition: 0.3s all;
-    -webkit-transition: 0.3s all;
-    -moz-transition: 0.3s all;
-    -o-transition: 0.3s all;
-    -ms-transition: 0.3s all;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
-  .p-bottom-w3ls {
-    font-size: 14px;
-    color: #eee;
-    margin-top: 1em;
-    text-align: center;
-    text-transform: none;
-    letter-spacing: 1px;
+  .btns {
+    display: flex;
+    justify-content: flex-end;
   }
-
-  .p-bottom-w3ls a {
-    color: #df5799;
-    outline: none;
-    text-decoration: none;
-    margin-right: 8px;
-    font-weight: 600;
-  }
-
-  input::-webkit-input-placeholder {
-    color: white;
-  }
-
-  input::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color: white;
-  }
-
-  input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    color: white;
-  }
-
-  input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-    color: white;
-  }
-
 </style>

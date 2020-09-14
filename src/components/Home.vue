@@ -16,7 +16,9 @@
               <el-menu-item index="1-1">安全设置</el-menu-item>
             </el-submenu>
             <el-menu-item index="2">退出</el-menu-item>
-            <el-menu-item index="3"><el-color-picker title="选择皮肤"></el-color-picker></el-menu-item>
+            <el-menu-item index="3">
+              <el-color-picker title="选择皮肤"></el-color-picker>
+            </el-menu-item>
           </el-menu>
         </div>
       </el-header>
@@ -201,14 +203,10 @@
         value: ''
       }
     },
-    methods : {
+    methods: {
       getMenuList() {
-        this.$axios.get("/system/user/getUserList", {
-          params: {
-            access_token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAwMDY5NTQsInVzZXJfbmFtZSI6InVzZXJfMSIsImF1dGhvcml0aWVzIjpbInRlc3QiXSwianRpIjoiNTUxMjkyMjEtNWNiYi00NWVmLWIwOGItZGVhZjZiNjY0NmNkIiwiY2xpZW50X2lkIjoiY2xpZW50XzEiLCJzY29wZSI6WyJhbGwiXX0.TFfcn_crMdeMEo_SLaNngR4dJDDIiYRT5f3VdOpnCkCTnDAEMPmiXkGMTL5QF15O94vCvFedpLro7gBkwsQSHtTKOYjLPhMLBKLHL6VHFzJS8GDT9CgsPShCopEJ6PPG8sdTXFN3o3rk4VIZ8xAaVM3Yoek_TGQMFqwwFVFrJ2rTO6ypVbPNsdLOCwx7V7HpbtrigHOwiwSnDqq7QS72RJ8e9pnDX9j1gfNZKpOghJYE_WATkScOJQovkTcRqAsdhulrCDA4-M46LvcPv4UPOJU_CrmfslDB6BXVsEdAEi_ILXMClNw56RIkhWFHAKEBjfDUYT5EZbwdJI2hJO5bLw'
-          }
-        }).then(function (resp) {
-          console.log(resp)
+        this.$axios.get("/system/user/getUserList", {}).then(res => {
+
         })
       }
     }
