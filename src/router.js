@@ -1,15 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from './components/Home'
+import Home from './components/Home'
 import Login from './components/Login'
-import 'element-ui/lib/theme-chalk/index.css'
+import Welcome from './components/Welcome'
+import UserList from "./components/user/UserList";
 
 Vue.use(Router)
 
 const router = new Router({
   routes: [
-    {path: '/', name: 'index', component: Index},
-    {path: '/login', name: 'login', component: Login}
+    {path: '/login', component: Login},
+    {
+      path: '/',
+      component: Home,
+      redirect: '/welcome',
+      children: [{path: '/welcome', component: Welcome}, {path: '/userList', component: UserList}]
+    }
   ]
 })
 

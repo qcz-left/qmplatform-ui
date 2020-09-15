@@ -54,6 +54,7 @@
         this.$refs.loginFormRef.resetFields()
       },
       loginSubmit() {
+        window.sessionStorage.setItem('token', "123456");
         this.$axios.get('/oauth2/login', {params: this.loginForm}).then(res => {
           let data = res.data;
           if (data.code !== 200) {

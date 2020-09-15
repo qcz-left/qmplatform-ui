@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import './plugins/element.js'
 import App from './components/App'
-import router from './router'
 import axios from 'axios'
+
+import router from './router'
+import './plugins/element.js'
 // 导入字体图标
 import './assets/fonts/iconfont.css'
 
