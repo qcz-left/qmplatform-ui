@@ -24,14 +24,18 @@
       </el-header>
       <el-container>
         <!-- 左侧边栏 -->
-        <el-aside>
+        <el-aside :width="menuWidth">
+          <!-- 展开或收起 -->
+          <div class="menu-collapse" @click="openOrCloseCollapse">|||</div>
           <el-menu
             default-active="2"
             class="el-menu-vertical-demo"
             background-color="#45464a"
             text-color="white"
             active-text-color="#02af9f"
-            router>
+            router
+            :collapse="isCollapse"
+            :collapse-transition="transition">
             <el-menu-item index="1">
               <i class="el-icon-menu"></i>
               <span slot="title">主页</span>
@@ -75,7 +79,9 @@
     name: "Home.vue",
     data() {
       return {
-
+        isCollapse: false,
+        transition: false,
+        menuWidth: '300px'
       }
     },
     methods: {
@@ -83,12 +89,30 @@
         this.$axios.get("/system/user/getUserList", {}).then(res => {
 
         })
+      },
+      // 收起或展开折叠
+      openOrCloseCollapse() {
+        this.isCollapse = !this.isCollapse;
+        if (this.isCollapse) {
+          this.menuWidth = "64px";
+        } else {
+          this.menuWidth = this.$options.data().menuWidth;
+        }
       }
     }
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
+
+  .menu-collapse {
+    line-height: 30px;
+    color: gainsboro;
+    background: #666666;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+  }
+
   .index {
     height: 100%;
   }
