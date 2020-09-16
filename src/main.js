@@ -1,31 +1,17 @@
 import Vue from 'vue'
 import App from './components/App'
-import axios from 'axios'
-
+import {get, post, put, patch, del} from './util/http'
 import router from './router'
 import './plugins/element.js'
 // 导入字体图标
 import './assets/fonts/iconfont.css'
 
 Vue.config.productionTip = false
-axios.defaults.baseURL = '/api'
-Vue.prototype.$axios = axios
-
-axios.interceptors.request.use(config => {
-  config.headers.Authorization = window.sessionStorage.getItem('token')
-  // 在最后必须 return config
-  return config
-})
-
-axios.interceptors.response.use(response => {
-  return response;
-}, error => {
-  // token 过期处理
-  if (error.response.status == 401) {
-    window.sessionStorage.removeItem('token');
-    window.location.href = '/login';
-  }
-})
+Vue.prototype.$get = get
+Vue.prototype.$post = post
+Vue.prototype.$put = put
+Vue.prototype.$patch = patch
+Vue.prototype.$del = del
 
 /* eslint-disable no-new */
 new Vue({

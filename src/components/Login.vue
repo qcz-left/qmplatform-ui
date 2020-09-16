@@ -55,12 +55,11 @@
       },
       loginSubmit() {
         window.sessionStorage.setItem('token', "123456");
-        this.$axios.get('/oauth2/login', {params: this.loginForm}).then(res => {
-          let data = res.data;
-          if (data.code !== 200) {
+        this.$get('/oauth2/login', this.loginForm).then(res => {
+          if (res.code !== 200) {
             return this.$message.error('用户名或密码不正确！')
           }
-          window.sessionStorage.setItem('token', data.data.accessToken);
+          window.sessionStorage.setItem('token', res.data.accessToken);
           this.$router.push('/');
         });
       }

@@ -30,9 +30,12 @@ import {
   Option,
   DropdownItem,
   DropdownMenu,
-  Dropdown
+  Dropdown,
+  Tag,
+  MessageBox
 } from 'element-ui'
 
+Vue.use(Tag)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
 Vue.use(DropdownItem)
@@ -63,3 +66,7 @@ Vue.use(Tooltip)
 Vue.use(Pagination)
 Vue.use(Dialog)
 Vue.prototype.$message = Message
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$prompt = MessageBox.prompt;
