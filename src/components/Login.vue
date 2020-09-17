@@ -51,7 +51,7 @@
     methods: {
       // 点击重置按钮，重置登录表单
       resetLoginForm() {
-        this.$refs.loginFormRef.resetFields()
+        this.$refs.loginFormRef.resetFields();
       },
       loginSubmit() {
         window.sessionStorage.setItem('token', "123456");

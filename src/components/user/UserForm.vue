@@ -2,13 +2,14 @@
   <div>
     <!-- 用户表单 -->
     <el-dialog
-      title="添加用户"
+      :title="dialogTitle"
       :visible.sync="centerDialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      @close="resetForm"
       width="30%"
       center>
-      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px">
+      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username" clearable/>
         </el-form-item>
@@ -32,7 +33,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
             <el-button @click="centerDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+            <el-button type="primary" @click="submitForm">确 定</el-button>
           </span>
     </el-dialog>
   </div>
@@ -45,7 +46,16 @@
     name: "UserForm",
     data() {
       return {
+        dialogTitle: '',
+        centerDialogVisible: false,
+        // 性别下拉框数据
+        optUserSex: [
+          {value: '1', label: '男'},
+          {value: '2', label: '女'}
+        ],
+        // 表单编辑参数
         editForm: {
+          id: '',
           username: '',
           loginname: '',
           userSex: '',
@@ -53,10 +63,7 @@
           emailAddr: '',
           remark: ''
         },
-        optUserSex: [
-          {value: '1', label: '男'},
-          {value: '2', label: '女'}
-        ],
+        // 表单校验规则
         rules: {
           username: [
             {required: true, message: '请填写用户名'}
@@ -72,6 +79,46 @@
             {required: true, validator: validEmail, trigger: 'blur'}
           ]
         }
+      }
+    },
+    methods: {
+      // 提交表单
+      submitForm() {
+        this.$refs.editFormRef.validate(valid => {
+          if (valid) {
+            // 数据校验成功，提交表单
+            if (this.editForm.id) {
+              this.$patch("/system/user/updateUser", this.editForm).then(res => {
+                if (res.code === 200) {
+                  this.$message.success("保存成功！");
+                  // 关闭弹窗
+                  this.centerDialogVisible = false;
+                  // 刷新列表数据
+                  this.$parent.getUserList();
+                } else {
+                  this.$message.error("保存失败！");
+                }
+              })
+            } else {
+              this.$post('/system/user/addUser', this.editForm).then(res => {
+                if (res.code === 200) {
+                  this.$message.success("保存成功！");
+                  // 关闭弹窗
+                  this.centerDialogVisible = false;
+                  // 刷新列表数据
+                  this.$parent.getUserList();
+                } else {
+                  this.$message.error("保存失败！");
+                }
+              })
+            }
+          }
+        });
+      },
+      // 关闭时重置
+      resetForm() {
+        Object.assign(this.$data.editForm, this.$options.data().editForm);
+        this.$refs.editFormRef.resetFields();
       }
     }
   }

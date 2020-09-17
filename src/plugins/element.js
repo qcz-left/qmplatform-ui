@@ -32,9 +32,11 @@ import {
   DropdownMenu,
   Dropdown,
   Tag,
-  MessageBox
+  MessageBox,
+  Loading
 } from 'element-ui'
 
+Vue.use(Loading);
 Vue.use(Tag);
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);

@@ -10,47 +10,14 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getMenuList" icon="el-icon-search">查询</el-button>
+        <el-button type="primary" @click="doSearchList" icon="el-icon-search">查询</el-button>
         <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
       </el-form-item>
     </el-form>
     <!-- 用户表单 -->
-    <el-dialog
-      title="添加用户"
-      :visible.sync="centerDialogVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="30%"
-      center>
-      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="editForm.username" clearable/>
-        </el-form-item>
-        <el-form-item label="登录名" prop="loginname">
-          <el-input v-model="editForm.loginname" clearable/>
-        </el-form-item>
-        <el-form-item label="性别">
-          <el-select v-model="editForm.userSex" placeholder="请选择">
-            <el-option v-for="item in optUserSex" :key="item.value" :label="item.label" :value="item.value"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="editForm.phone" clearable/>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="emailAddr">
-          <el-input v-model="editForm.emailAddr" clearable/>
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input type="textarea" v-model="editForm.remark"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
-          </span>
-    </el-dialog>
+    <user-form ref="userFormRef"/>
     <!-- 用户列表 -->
-    <el-table :data="tableData" border stripe>
+    <el-table :data="tableData" border stripe v-loading="loading">
       <el-table-column type="selection" width="40"/>
       <el-table-column type="index" width="40"/>
       <el-table-column prop="username" sortable label="用户名"/>
@@ -81,10 +48,11 @@
 </template>
 
 <script>
-  import {validPhone, validEmail} from "../../util/validate";
+  import UserForm from "./UserForm";
 
   export default {
     name: "UserList",
+    components: {UserForm},
     data() {
       return {
         // 列表查询参数
@@ -96,35 +64,12 @@
         tableData: [],
         // 性别下拉框数据
         optUserSex: [
+          {value: '', label: '全部'},
           {value: '1', label: '男'},
           {value: '2', label: '女'}
         ],
         centerDialogVisible: false,
-        // 表单编辑参数
-        editForm: {
-          username: '',
-          loginname: '',
-          userSex: '',
-          phone: '',
-          emailAddr: '',
-          remark: ''
-        },
-        // 表单校验规则
-        rules: {
-          username: [
-            {required: true, message: '请填写用户名'}
-          ],
-          loginname: [
-            {required: true, message: '请填写登录名'},
-            {min: 3, max: 5, message: '长度在 3 到 5 个字符'}
-          ],
-          phone: [
-            {required: true, validator: validPhone, trigger: 'blur'}
-          ],
-          emailAddr: [
-            {required: true, validator: validEmail, trigger: 'blur'}
-          ]
-        }
+        loading: false
       }
     },
     created() {
@@ -132,15 +77,17 @@
       this.getUserList();
     },
     methods: {
-      getMenuList() {
-
+      doSearchList() {
+        this.getUserList();
       },
       /**
        * 获取用户列表
        */
       getUserList() {
-        this.$get("/system/user/getUserList", {}).then(res => {
+        this.loading = true;
+        this.$get("/system/user/getUserList", this.queryInfo).then(res => {
           this.tableData = res.data;
+          this.loading = false;
         })
       },
       /**
@@ -148,11 +95,15 @@
        * @param row
        */
       handleEdit(row) {
+        this.$refs.userFormRef.centerDialogVisible = true;
         if (row) {
-          // 编辑
+          // 设置弹窗标题
+          this.$refs.userFormRef.dialogTitle = '编辑用户【' + row.username + '】';
+          // 编辑，拷贝row中的值到editForm
+          Object.assign(this.$refs.userFormRef.editForm, row);
         } else {
           // 新增
-          this.centerDialogVisible = true;
+          this.$refs.userFormRef.dialogTitle = '添加用户';
         }
       },
       /**
@@ -160,7 +111,7 @@
        * @param row
        */
       handleDelete(row) {
-        this.$confirm('此操作将永久删除' + row.username + '用户, 是否继续?', '警告', {
+        this.$confirm('此操作将永久删除 ' + row.username + ' 用户, 是否继续?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
