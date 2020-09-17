@@ -57,7 +57,7 @@
       <el-table-column prop="loginname" sortable label="登录名"/>
       <el-table-column prop="userSex" label="性别">
         <template slot-scope="scope">
-          <template v-if="scope.row.userSex == '1'">
+          <template v-if="scope.row.userSex === '1'">
             <el-tag>男</el-tag>
           </template>
           <template v-else>
@@ -87,10 +87,20 @@
     name: "UserList",
     data() {
       return {
+        // 列表查询参数
         queryInfo: {
           username: '',
           userSex: ''
         },
+        // 数据列表
+        tableData: [],
+        // 性别下拉框数据
+        optUserSex: [
+          {value: '1', label: '男'},
+          {value: '2', label: '女'}
+        ],
+        centerDialogVisible: false,
+        // 表单编辑参数
         editForm: {
           username: '',
           loginname: '',
@@ -99,12 +109,7 @@
           emailAddr: '',
           remark: ''
         },
-        tableData: [],
-        optUserSex: [
-          {value: '1', label: '男'},
-          {value: '2', label: '女'}
-        ],
-        centerDialogVisible: false,
+        // 表单校验规则
         rules: {
           username: [
             {required: true, message: '请填写用户名'}
@@ -123,17 +128,25 @@
       }
     },
     created() {
+      // 进入页面时主动获取一次列表数据
       this.getUserList();
     },
     methods: {
       getMenuList() {
 
       },
+      /**
+       * 获取用户列表
+       */
       getUserList() {
         this.$get("/system/user/getUserList", {}).then(res => {
           this.tableData = res.data;
         })
       },
+      /**
+       * 添加或编辑用户
+       * @param row
+       */
       handleEdit(row) {
         if (row) {
           // 编辑
@@ -142,14 +155,18 @@
           this.centerDialogVisible = true;
         }
       },
+      /**
+       * 删除操作
+       * @param row
+       */
       handleDelete(row) {
-        this.$confirm('此操作将永久删除该用户, 是否继续?', '警告', {
+        this.$confirm('此操作将永久删除' + row.username + '用户, 是否继续?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           this.$del('/system/user/delUser/' + row.id, {}).then(res => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('删除成功!');
               this.getUserList();
             } else {
