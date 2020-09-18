@@ -8,17 +8,24 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   // 在最后必须 return config
   return config
-})
+});
 
 axios.interceptors.response.use(response => {
+  redirectLogin(response.data.code);
   return response;
 }, error => {
-  // token 过期处理
-  if (error.response.status == 401) {
+  redirectLogin(error.response.status);
+});
+
+/**
+ * token过期，重定向到登录页面
+ */
+function redirectLogin(statusCode) {
+  if (statusCode === 401) {
     window.sessionStorage.removeItem('token');
     window.location.href = '/login';
   }
-})
+}
 
 /**
  * get方法，对应get请求

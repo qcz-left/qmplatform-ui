@@ -3,13 +3,14 @@
     <!-- 用户表单 -->
     <el-dialog
       :title="dialogTitle"
-      :visible.sync="centerDialogVisible"
+      :visible="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      @close="resetForm"
+      @close="closeDialog"
+      v-if="centerDialogVisible"
       width="30%"
       center>
-      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
+      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef" clearValidate>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username" clearable/>
         </el-form-item>
@@ -32,7 +33,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-            <el-button @click="centerDialogVisible = false">取 消</el-button>
+            <el-button @click="closeDialog">取 消</el-button>
             <el-button type="primary" @click="submitForm">确 定</el-button>
           </span>
     </el-dialog>
@@ -48,6 +49,7 @@
       return {
         dialogTitle: '',
         centerDialogVisible: false,
+        show: true,
         // 性别下拉框数据
         optUserSex: [
           {value: '1', label: '男'},
@@ -92,7 +94,7 @@
                 if (res.code === 200) {
                   this.$message.success("保存成功！");
                   // 关闭弹窗
-                  this.centerDialogVisible = false;
+                  this.closeDialog();
                   // 刷新列表数据
                   this.$parent.getUserList();
                 } else {
@@ -104,7 +106,7 @@
                 if (res.code === 200) {
                   this.$message.success("保存成功！");
                   // 关闭弹窗
-                  this.centerDialogVisible = false;
+                  this.closeDialog();
                   // 刷新列表数据
                   this.$parent.getUserList();
                 } else {
@@ -115,10 +117,22 @@
           }
         });
       },
+      // 打开时填充表单
+      openDialog(row) {
+        this.centerDialogVisible = true;
+        if (row) {
+          // 设置弹窗标题
+          this.dialogTitle = '编辑用户【' + row.username + '】';
+          // 编辑，拷贝row中的值到editForm
+          Object.assign(this.editForm, row);
+        } else {
+          // 新增
+          this.dialogTitle = '添加用户';
+        }
+      },
       // 关闭时重置
-      resetForm() {
-        Object.assign(this.$data.editForm, this.$options.data().editForm);
-        this.$refs.editFormRef.resetFields();
+      closeDialog() {
+        this.centerDialogVisible = false;
       }
     }
   }

@@ -95,16 +95,7 @@
        * @param row
        */
       handleEdit(row) {
-        this.$refs.userFormRef.centerDialogVisible = true;
-        if (row) {
-          // 设置弹窗标题
-          this.$refs.userFormRef.dialogTitle = '编辑用户【' + row.username + '】';
-          // 编辑，拷贝row中的值到editForm
-          Object.assign(this.$refs.userFormRef.editForm, row);
-        } else {
-          // 新增
-          this.$refs.userFormRef.dialogTitle = '添加用户';
-        }
+        this.$refs.userFormRef.openDialog(row);
       },
       /**
        * 删除操作
