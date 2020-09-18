@@ -42,7 +42,14 @@
       </el-table-column>
     </el-table>
     <el-pagination
-      layout="total, sizes, prev, pager, next, jumper">
+      align="right"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, next, jumper"
+      :total="400">
     </el-pagination>
   </div>
 </template>
@@ -69,7 +76,8 @@
           {value: '2', label: '女'}
         ],
         centerDialogVisible: false,
-        loading: false
+        loading: false,
+        currentPage: 1
       }
     },
     created() {
@@ -77,6 +85,12 @@
       this.getUserList();
     },
     methods: {
+      handleCurrentChange() {
+
+      },
+      handleSizeChange() {
+
+      },
       doSearchList() {
         this.getUserList();
       },
@@ -86,7 +100,7 @@
       getUserList() {
         this.loading = true;
         this.$get("/system/user/getUserList", this.queryInfo).then(res => {
-          this.tableData = res.data;
+          this.tableData = res.data.list;
           this.loading = false;
         })
       },

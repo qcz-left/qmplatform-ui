@@ -2,6 +2,10 @@
   <div>
     <!-- 用户表单 -->
     <el-dialog
+      v-loading="loading"
+      element-loading-text="正在保存数据..."
+      element-loading-spinner="el-icon-loading"
+      element-loading-background="rgba(0, 0, 0, 0.8)"
       :title="dialogTitle"
       :visible="true"
       :close-on-click-modal="false"
@@ -47,9 +51,12 @@
     name: "UserForm",
     data() {
       return {
+        // 弹窗标题
         dialogTitle: '',
+        // 是否显示弹窗
         centerDialogVisible: false,
-        show: true,
+        // 表单提交遮罩
+        loading: false,
         // 性别下拉框数据
         optUserSex: [
           {value: '1', label: '男'},
@@ -84,40 +91,44 @@
       }
     },
     methods: {
-      // 提交表单
+      /**
+       * 提交表单
+       */
       submitForm() {
         this.$refs.editFormRef.validate(valid => {
           if (valid) {
             // 数据校验成功，提交表单
+            this.loading = true;
             if (this.editForm.id) {
-              this.$patch("/system/user/updateUser", this.editForm).then(res => {
-                if (res.code === 200) {
-                  this.$message.success("保存成功！");
-                  // 关闭弹窗
-                  this.closeDialog();
-                  // 刷新列表数据
-                  this.$parent.getUserList();
-                } else {
-                  this.$message.error("保存失败！");
-                }
+              this.$put("/system/user/updateUser", this.editForm).then(res => {
+                this.submitResp(res);
               })
             } else {
               this.$post('/system/user/addUser', this.editForm).then(res => {
-                if (res.code === 200) {
-                  this.$message.success("保存成功！");
-                  // 关闭弹窗
-                  this.closeDialog();
-                  // 刷新列表数据
-                  this.$parent.getUserList();
-                } else {
-                  this.$message.error("保存失败！");
-                }
+                this.submitResp(res);
               })
             }
           }
         });
       },
-      // 打开时填充表单
+      /**
+       * 表单提交后的响应
+       */
+      submitResp(res) {
+        this.loading = false;
+        if (res.code === 200) {
+          this.$message.success("保存成功！");
+          // 关闭弹窗
+          this.closeDialog();
+          // 刷新列表数据
+          this.$parent.getUserList();
+        } else {
+          this.$message.error("保存失败！");
+        }
+      },
+      /**
+       * 打开时填充表单
+       */
       openDialog(row) {
         this.centerDialogVisible = true;
         if (row) {
@@ -130,9 +141,11 @@
           this.dialogTitle = '添加用户';
         }
       },
-      // 关闭时重置
+      /**
+       * 关闭时重置
+       */
       closeDialog() {
-        this.centerDialogVisible = false;
+        Object.assign(this.$data, this.$options.data());
       }
     }
   }

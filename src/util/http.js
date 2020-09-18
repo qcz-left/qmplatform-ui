@@ -5,7 +5,7 @@ axios.defaults.baseURL = '/api'
 Vue.prototype.$axios = axios
 
 axios.interceptors.request.use(config => {
-  config.headers.Authorization = window.sessionStorage.getItem('token')
+  config.headers.Authorization = window.sessionStorage.getItem('token');
   // 在最后必须 return config
   return config
 });
@@ -23,7 +23,8 @@ axios.interceptors.response.use(response => {
 function redirectLogin(statusCode) {
   if (statusCode === 401) {
     window.sessionStorage.removeItem('token');
-    window.location.href = '/login';
+    window.location.href = '/';
+    return;
   }
 }
 
@@ -67,13 +68,15 @@ export function post(url, params) {
 
 export function put(url, params) {
   return new Promise((resolve, reject) => {
-    axios.put(url, JSON.stringify(params))
-      .then(res => {
-        resolve(res.data);
-      })
-      .catch(err => {
-        reject(err.data)
-      })
+    axios.put(url, JSON.stringify(params), {
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+      }
+    }).then(res => {
+      resolve(res.data);
+    }).catch(err => {
+      reject(err.data)
+    })
   });
 }
 

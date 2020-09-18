@@ -9,7 +9,6 @@
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#02af9f"
-            class="el-menu-demo"
             mode="horizontal">
             <el-submenu index="1">
               <template slot="title">系统管理员</template>
@@ -28,7 +27,7 @@
           <!-- 展开或收起 -->
           <div class="menu-collapse" @click="openOrCloseCollapse">|||</div>
           <el-menu
-            default-active="/userList"
+            :default-active="defaultActive"
             class="el-menu-vertical-demo"
             background-color="#45464a"
             text-color="white"
@@ -36,7 +35,7 @@
             router
             :collapse="isCollapse"
             :collapse-transition="false">
-            <el-menu-item index="1">
+            <el-menu-item index="/welcome">
               <i class="el-icon-menu"></i>
               <span slot="title">主页</span>
             </el-menu-item>
@@ -45,11 +44,11 @@
                 <i class="el-icon-location"></i>
                 <span>系统管理</span>
               </template>
-              <el-menu-item-group>
-                <el-menu-item index="/userList"><i class="el-icon-location"></i>用户管理</el-menu-item>
-                <el-menu-item index="2-2"><i class="el-icon-location"></i>菜单管理</el-menu-item>
-                <el-menu-item index="2-3"><i class="el-icon-location"></i>角色管理</el-menu-item>
-              </el-menu-item-group>
+              <el-menu-item index="/userList"><i class="el-icon-location"></i>用户管理</el-menu-item>
+              <el-menu-item index="2-3"><i class="el-icon-location"></i>角色管理</el-menu-item>
+              <el-menu-item index="2-4"><i class="el-icon-location"></i>部门管理</el-menu-item>
+              <el-menu-item index="2-5"><i class="el-icon-location"></i>图标管理</el-menu-item>
+              <el-menu-item index="2-2"><i class="el-icon-location"></i>菜单管理</el-menu-item>
             </el-submenu>
             <el-menu-item index="3">
               <i class="el-icon-document"></i>
@@ -79,7 +78,17 @@
     name: "Home.vue",
     data() {
       return {
-        isCollapse: false
+        isCollapse: false,
+        defaultActive: ''
+      }
+    },
+    created() {
+      let nowActive = window.sessionStorage.getItem('nowActive');
+      if (nowActive) {
+        this.defaultActive = nowActive;
+      } else {
+        this.defaultActive = '/welcome';
+        window.sessionStorage.setItem('nowActive', this.defaultActive);
       }
     },
     methods: {
