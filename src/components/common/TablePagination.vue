@@ -4,7 +4,7 @@
               v-loading="tableConfig ? tableConfig.loading : false">
       <template v-for="(column, index) in tableConfig.columns">
         <el-table-column
-          v-if="column.formatter"
+          v-if="column.type == 'slot'"
           :index="index"
           :type="column.type"
           :prop="column.prop"
@@ -13,11 +13,12 @@
           :width="column.width ? column.width : 'auto'"
           :align="column.align">
           <template slot-scope="scope">
-            <span v-html="column.formatter(scope.row[column.prop], scope.row)"/>
+            <slot :name="column.slotName" :row="scope.row" :value="scope.row[column.prop]"></slot>
+<!--            <span v-html="column.formatter(scope.row[column.prop], scope.row)"/>-->
           </template>
         </el-table-column>
         <el-table-column
-          v-if="!column.formatter"
+          v-else
           :index="index"
           :type="column.type"
           :prop="column.prop"
@@ -47,6 +48,19 @@
     props: ['tableConfig'],
     data() {
       return {}
+    },
+    methods: {
+      getList() {
+        this.loading = true;
+        this.$get(this.tableConfig.url, this.tableConfig.queryParams).then(res => {
+          this.tableConfig.tableData = res.data.list;
+          this.tableConfig.total = res.data.count;
+          this.loading = false;
+        })
+      }
+    },
+    created() {
+      this.getList();
     }
   }
 </script>

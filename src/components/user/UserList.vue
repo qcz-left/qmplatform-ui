@@ -17,7 +17,16 @@
     <!-- 用户表单 -->
     <user-form ref="userFormRef"/>
     <!-- 用户列表 -->
-    <table-pagination :tableConfig="tableConfig"/>
+    <table-pagination :tableConfig="tableConfig">
+      <template v-slot:operator="data">
+        <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
+        <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
+      </template>
+      <template v-slot:userSex="data">
+        <el-tag v-if="data.value == 1">男</el-tag>
+        <el-tag type="danger" v-else>女</el-tag>
+      </template>
+    </table-pagination>
   </div>
 </template>
 
@@ -32,25 +41,18 @@
       return {
         tableConfig: {
           // 数据列表
-          tableData: [
-            {username: '123', loginname: 'qcz', userSex: 1, phone: '110', emailAddr: 'qcz_left@163.com'}
-          ],
+          tableData: [],
+          url: '/system/user/getUserList',
+          queryParams: this.queryInfo,
           columns: [
             {type: 'selection', width: 40},
             {type: 'index', width: 40},
             {label: '用户名', prop: 'username', sortable: true, width: 100},
             {label: '登录名', prop: 'loginname', sortable: true, width: 100},
-            {type: 'tag',label: '性别', prop: 'userSex'},
+            {label: '性别', prop: 'userSex', type: 'slot', slotName: 'userSex'},
             {label: '电话', prop: 'phone'},
             {label: '邮箱', prop: 'emailAddr', sortable: true},
-            {
-              label: '操作', align: 'center', buttons: [
-                {name: '编辑', size: 'mini', handler: this.handleEdit},
-                {name: '删除', size: 'mini', type: 'danger', handler: this.handleDelete}
-              ], formatter: (value, row) => {
-                return '<button class="el-button" type="success" icon="el-icon-plus" @click="handleEdit()">添加</button>';
-              }
-            }
+            {label: '操作', align: 'center',type: 'slot',  slotName: 'operator'}
           ],
           handleSizeChange() {
 
@@ -87,24 +89,21 @@
        * 获取用户列表
        */
       getUserList() {
-        /*this.loading = true;
-        this.$get("/system/user/getUserList", this.queryInfo).then(res => {
-          this.tableConfig.tableData = res.data.list;
-          this.loading = false;
-        })*/
+        this.tableConfig.getList();
       },
       /**
        * 添加或编辑用户
        * @param row
        */
-      handleEdit(value, row) {
+      handleEdit(row) {
+        console.log(row)
         this.$refs.userFormRef.openDialog(row);
       },
       /**
        * 删除操作
        * @param row
        */
-      handleDelete(value, row) {
+      handleDelete(row) {
         this.$confirm('此操作将永久删除 ' + row.username + ' 用户, 是否继续?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
