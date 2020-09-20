@@ -17,58 +17,53 @@
     <!-- 用户表单 -->
     <user-form ref="userFormRef"/>
     <!-- 用户列表 -->
-    <el-table :data="tableData" border stripe v-loading="loading">
-      <el-table-column type="selection" width="40"/>
-      <el-table-column type="index" width="40"/>
-      <el-table-column prop="username" sortable label="用户名"/>
-      <el-table-column prop="loginname" sortable label="登录名"/>
-      <el-table-column prop="userSex" label="性别">
-        <template slot-scope="scope">
-          <template v-if="scope.row.userSex === '1'">
-            <el-tag>男</el-tag>
-          </template>
-          <template v-else>
-            <el-tag type="danger">女</el-tag>
-          </template>
-        </template>
-      </el-table-column>
-      <el-table-column prop="phone" label="电话"/>
-      <el-table-column prop="emailAddr" sortable label="邮箱"/>
-      <el-table-column align="center" label="操作">
-        <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      align="right"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, next, jumper"
-      :total="400">
-    </el-pagination>
+    <table-pagination :tableConfig="tableConfig"/>
   </div>
 </template>
 
 <script>
   import UserForm from "./UserForm";
+  import TablePagination from "../common/TablePagination";
 
   export default {
     name: "UserList",
-    components: {UserForm},
+    components: {TablePagination, UserForm},
     data() {
       return {
+        tableConfig: {
+          // 数据列表
+          tableData: [
+            {username: '123', loginname: 'qcz', userSex: 1, phone: '110', emailAddr: 'qcz_left@163.com'}
+          ],
+          columns: [
+            {type: 'selection', width: 40},
+            {type: 'index', width: 40},
+            {label: '用户名', prop: 'username', sortable: true, width: 100},
+            {label: '登录名', prop: 'loginname', sortable: true, width: 100},
+            {type: 'tag',label: '性别', prop: 'userSex'},
+            {label: '电话', prop: 'phone'},
+            {label: '邮箱', prop: 'emailAddr', sortable: true},
+            {
+              label: '操作', align: 'center', buttons: [
+                {name: '编辑', size: 'mini', handler: this.handleEdit},
+                {name: '删除', size: 'mini', type: 'danger', handler: this.handleDelete}
+              ], formatter: (value, row) => {
+                return '<button class="el-button" type="success" icon="el-icon-plus" @click="handleEdit()">添加</button>';
+              }
+            }
+          ],
+          handleSizeChange() {
+
+          },
+          handleCurrentChange() {
+
+          }
+        },
         // 列表查询参数
         queryInfo: {
           username: '',
           userSex: ''
         },
-        // 数据列表
-        tableData: [],
         // 性别下拉框数据
         optUserSex: [
           {value: '', label: '全部'},
@@ -85,12 +80,6 @@
       this.getUserList();
     },
     methods: {
-      handleCurrentChange() {
-
-      },
-      handleSizeChange() {
-
-      },
       doSearchList() {
         this.getUserList();
       },
@@ -98,24 +87,24 @@
        * 获取用户列表
        */
       getUserList() {
-        this.loading = true;
+        /*this.loading = true;
         this.$get("/system/user/getUserList", this.queryInfo).then(res => {
-          this.tableData = res.data.list;
+          this.tableConfig.tableData = res.data.list;
           this.loading = false;
-        })
+        })*/
       },
       /**
        * 添加或编辑用户
        * @param row
        */
-      handleEdit(row) {
+      handleEdit(value, row) {
         this.$refs.userFormRef.openDialog(row);
       },
       /**
        * 删除操作
        * @param row
        */
-      handleDelete(row) {
+      handleDelete(value, row) {
         this.$confirm('此操作将永久删除 ' + row.username + ' 用户, 是否继续?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
