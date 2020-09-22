@@ -1,34 +1,38 @@
 <template>
-  <div>
-    <el-form :inline="true" class="demo-form-inline" align="left">
-      <el-form-item label="用户名">
-        <el-input placeholder="请输入内容" v-model="queryInfo.username" clearable/>
-      </el-form-item>
-      <el-form-item label="性别">
-        <el-select v-model="queryInfo.userSex" placeholder="请选择">
-          <el-option v-for="item in optUserSex" :key="item.value" :label="item.label" :value="item.value"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="doSearchList" icon="el-icon-search">查询</el-button>
-        <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="component-div">
+    <div class="form-div">
+      <el-form :inline="true" align="left">
+        <el-form-item label="用户名">
+          <el-input placeholder="请输入内容" v-model="tableConfig.queryParams.username" clearable/>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="tableConfig.queryParams.userSex" placeholder="请选择">
+            <el-option v-for="item in optUserSex" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="doSearchList" icon="el-icon-search">查询</el-button>
+          <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="table-div">
+      <!-- 用户列表 -->
+      <table-pagination ref="tableRef" :tableConfig="tableConfig">
+        <!--操作-->
+        <template v-slot:operator="data">
+          <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
+          <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
+        </template>
+        <!--性别-->
+        <template v-slot:userSex="data">
+          <el-tag v-if="data.value == 1">男</el-tag>
+          <el-tag type="danger" v-else>女</el-tag>
+        </template>
+      </table-pagination>
+    </div>
     <!-- 用户表单 -->
     <user-form ref="userFormRef"/>
-    <!-- 用户列表 -->
-    <table-pagination :tableConfig="tableConfig">
-      <!--操作-->
-      <template v-slot:operator="data">
-        <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
-        <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
-      </template>
-      <!--性别-->
-      <template v-slot:userSex="data">
-        <el-tag v-if="data.value == 1">男</el-tag>
-        <el-tag type="danger" v-else>女</el-tag>
-      </template>
-    </table-pagination>
   </div>
 </template>
 
@@ -42,10 +46,11 @@
     data() {
       return {
         tableConfig: {
-          // 数据列表
-          tableData: [],
           url: '/system/user/getUserList',
-          queryParams: this.queryInfo,
+          queryParams: {
+            username: '',
+            userSex: ''
+          },
           columns: [
             {type: 'selection', width: 40},
             {type: 'index', width: 40},
@@ -55,18 +60,7 @@
             {label: '电话', prop: 'phone'},
             {label: '邮箱', prop: 'emailAddr', sortable: true},
             {label: '操作', align: 'center', type: 'slot', slotName: 'operator'}
-          ],
-          handleSizeChange() {
-
-          },
-          handleCurrentChange() {
-
-          }
-        },
-        // 列表查询参数
-        queryInfo: {
-          username: '',
-          userSex: ''
+          ]
         },
         // 性别下拉框数据
         optUserSex: [
@@ -75,8 +69,7 @@
           {value: '2', label: '女'}
         ],
         centerDialogVisible: false,
-        loading: false,
-        currentPage: 1
+        loading: false
       }
     },
     created() {
@@ -90,14 +83,13 @@
        * 获取用户列表
        */
       getList() {
-        TablePagination.methods.getList();
+        this.$refs.tableRef.getList(true);
       },
       /**
        * 添加或编辑用户
        * @param row
        */
       handleEdit(row) {
-        console.log(row)
         this.$refs.userFormRef.openDialog(row);
       },
       /**

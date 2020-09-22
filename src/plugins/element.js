@@ -10,6 +10,7 @@ import {
   Header,
   Aside,
   Main,
+  Footer,
   Menu,
   Submenu,
   MenuItem,
@@ -53,6 +54,7 @@ Vue.use(Container);
 Vue.use(Header);
 Vue.use(Aside);
 Vue.use(Main);
+Vue.use(Footer);
 Vue.use(Menu);
 Vue.use(Submenu);
 Vue.use(MenuItem);

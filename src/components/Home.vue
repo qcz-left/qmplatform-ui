@@ -1,5 +1,5 @@
 <template>
-  <div class="index">
+  <div class="component-div">
     <el-container style="height: 100%">
       <!-- 头部 -->
       <el-header>
@@ -108,10 +108,6 @@
     background: #666666;
     letter-spacing: 0.2em;
     cursor: pointer;
-  }
-
-  .index {
-    height: 100%;
   }
 
   .el-header {

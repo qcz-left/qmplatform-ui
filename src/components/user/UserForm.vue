@@ -121,7 +121,7 @@
           // 关闭弹窗
           this.closeDialog();
           // 刷新列表数据
-          this.$parent.getUserList();
+          this.$parent.getList();
         } else {
           this.$message.error("保存失败！");
         }
