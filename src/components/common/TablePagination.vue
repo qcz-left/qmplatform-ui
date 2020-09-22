@@ -14,7 +14,6 @@
           :align="column.align">
           <template slot-scope="scope">
             <slot :name="column.slotName" :row="scope.row" :value="scope.row[column.prop]"></slot>
-<!--            <span v-html="column.formatter(scope.row[column.prop], scope.row)"/>-->
           </template>
         </el-table-column>
         <el-table-column
@@ -43,6 +42,8 @@
 </template>
 
 <script>
+  import {get} from '../../util/http'
+
   export default {
     name: "TablePagination",
     props: ['tableConfig'],
@@ -51,11 +52,11 @@
     },
     methods: {
       getList() {
-        this.loading = true;
-        this.$get(this.tableConfig.url, this.tableConfig.queryParams).then(res => {
-          this.tableConfig.tableData = res.data.list;
-          this.tableConfig.total = res.data.count;
-          this.loading = false;
+        this.$parent.tableConfig.loading = true;
+        get(this.$parent.tableConfig.url, this.$parent.tableConfig.queryParams).then(res => {
+          this.$parent.tableConfig.tableData = res.data.list;
+          this.$parent.tableConfig.total = res.data.count;
+          this.$parent.tableConfig.loading = false;
         })
       }
     },

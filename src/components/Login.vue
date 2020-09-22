@@ -6,7 +6,7 @@
         <img src="../assets/logo.png" alt="">
       </div>
       <!-- 登录表单区域 -->
-      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form" v-loading="loading" element-loading-text="正在登录，请稍后...">
         <!-- 用户名 -->
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
@@ -29,6 +29,7 @@
   export default {
     data() {
       return {
+        loading: false,
         loginForm: {
           username: 'user_1',
           password: '123456'
@@ -54,8 +55,10 @@
         this.$refs.loginFormRef.resetFields();
       },
       loginSubmit() {
+        this.loading = true;
         window.sessionStorage.setItem('token', "123456");
         this.$get('/oauth2/login', this.loginForm).then(res => {
+          this.loading = false;
           if (res.code !== 200) {
             return this.$message.error('用户名或密码不正确！')
           }

@@ -18,10 +18,12 @@
     <user-form ref="userFormRef"/>
     <!-- 用户列表 -->
     <table-pagination :tableConfig="tableConfig">
+      <!--操作-->
       <template v-slot:operator="data">
         <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
         <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
       </template>
+      <!--性别-->
       <template v-slot:userSex="data">
         <el-tag v-if="data.value == 1">男</el-tag>
         <el-tag type="danger" v-else>女</el-tag>
@@ -47,12 +49,12 @@
           columns: [
             {type: 'selection', width: 40},
             {type: 'index', width: 40},
-            {label: '用户名', prop: 'username', sortable: true, width: 100},
-            {label: '登录名', prop: 'loginname', sortable: true, width: 100},
+            {label: '用户名', prop: 'username', sortable: true},
+            {label: '登录名', prop: 'loginname', sortable: true},
             {label: '性别', prop: 'userSex', type: 'slot', slotName: 'userSex'},
             {label: '电话', prop: 'phone'},
             {label: '邮箱', prop: 'emailAddr', sortable: true},
-            {label: '操作', align: 'center',type: 'slot',  slotName: 'operator'}
+            {label: '操作', align: 'center', type: 'slot', slotName: 'operator'}
           ],
           handleSizeChange() {
 
@@ -78,18 +80,17 @@
       }
     },
     created() {
-      // 进入页面时主动获取一次列表数据
-      this.getUserList();
+
     },
     methods: {
       doSearchList() {
-        this.getUserList();
+        this.getList();
       },
       /**
        * 获取用户列表
        */
-      getUserList() {
-        this.tableConfig.getList();
+      getList() {
+        TablePagination.methods.getList();
       },
       /**
        * 添加或编辑用户
@@ -112,7 +113,7 @@
           this.$del('/system/user/delUser/' + row.id, {}).then(res => {
             if (res.code === 200) {
               this.$message.success('删除成功!');
-              this.getUserList();
+              this.getList();
             } else {
               this.$message.error('删除失败!');
             }
