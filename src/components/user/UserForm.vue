@@ -14,7 +14,8 @@
       v-if="centerDialogVisible"
       width="30%"
       center>
-      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef" clearValidate>
+      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef"
+               clearValidate>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username" clearable/>
         </el-form-item>
@@ -79,7 +80,8 @@
           ],
           loginname: [
             {required: true, message: '请填写登录名'},
-            {min: 3, max: 5, message: '长度在 3 到 5 个字符'}
+            {min: 3, max: 5, message: '长度在 3 到 5 个字符'},
+            {validator: this.validLoginName, trigger: 'blur'}
           ],
           phone: [
             {required: true, validator: validPhone, trigger: 'blur'}
@@ -126,6 +128,18 @@
           this.$message.error("保存失败！");
         }
       },
+      validLoginName(rule, value, callback) {
+        this.$get('/system/user/validateLoginName', {
+          userId: this.editForm.id,
+          loginname: this.editForm.loginname,
+        }).then(res => {
+          if (res.code == 200) {
+            callback()
+          } else {
+            callback(new Error('登录名已存在，请重新输入！'))
+          }
+        });
+      },
       /**
        * 打开时填充表单
        */
@@ -140,7 +154,8 @@
           // 新增
           this.dialogTitle = '添加用户';
         }
-      },
+      }
+      ,
       /**
        * 关闭时重置
        */

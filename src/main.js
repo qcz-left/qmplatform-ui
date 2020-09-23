@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './components/App'
 import {get, post, put, patch, del} from './util/http'
+import common from './util/common'
 import router from './router'
 import './plugins/element.js'
 // 导入字体图标
@@ -13,6 +14,7 @@ Vue.prototype.$post = post;
 Vue.prototype.$put = put;
 Vue.prototype.$patch = patch;
 Vue.prototype.$del = del;
+Vue.prototype.$common = common;
 
 /* eslint-disable no-new */
 new Vue({
