@@ -20,7 +20,7 @@
           <el-input v-model="editForm.username" clearable/>
         </el-form-item>
         <el-form-item label="登录名" prop="loginname">
-          <el-input v-model="editForm.loginname" clearable/>
+          <el-input v-model="editForm.loginname" :disabled="disableProp.loginname" clearable/>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="editForm.userSex" placeholder="请选择">
@@ -47,10 +47,21 @@
 
 <script>
   import {validEmail, validPhone} from "../../util/validate";
+  import {get} from '../../util/http'
 
   export default {
     name: "UserForm",
     data() {
+      const validLoginName = async (rule, value, callback) => {
+        const res = await get('/system/user/validateLoginName', {
+          loginname: value,
+        });
+        if (res.code != 200) {
+          callback(new Error('登录名已存在，请重新输入！'))
+        } else {
+          callback();
+        }
+      }
       return {
         // 弹窗标题
         dialogTitle: '',
@@ -81,7 +92,7 @@
           loginname: [
             {required: true, message: '请填写登录名'},
             {min: 3, max: 5, message: '长度在 3 到 5 个字符'},
-            {validator: this.validLoginName, trigger: 'blur'}
+            {validator: validLoginName, trigger: 'blur'}
           ],
           phone: [
             {required: true, validator: validPhone, trigger: 'blur'}
@@ -89,6 +100,10 @@
           emailAddr: [
             {required: true, validator: validEmail, trigger: 'blur'}
           ]
+        },
+        // 禁用属性
+        disableProp: {
+          loginname: false
         }
       }
     },
@@ -128,18 +143,6 @@
           this.$message.error("保存失败！");
         }
       },
-      validLoginName(rule, value, callback) {
-        this.$get('/system/user/validateLoginName', {
-          userId: this.editForm.id,
-          loginname: this.editForm.loginname,
-        }).then(res => {
-          if (res.code == 200) {
-            callback()
-          } else {
-            callback(new Error('登录名已存在，请重新输入！'))
-          }
-        });
-      },
       /**
        * 打开时填充表单
        */
@@ -148,14 +151,16 @@
         if (row) {
           // 设置弹窗标题
           this.dialogTitle = '编辑用户【' + row.username + '】';
+          // 不允许修改登录名
+          this.disableProp.loginname = true;
+          delete this.rules.loginname;
           // 编辑，拷贝row中的值到editForm
           Object.assign(this.editForm, row);
         } else {
           // 新增
           this.dialogTitle = '添加用户';
         }
-      }
-      ,
+      },
       /**
        * 关闭时重置
        */
