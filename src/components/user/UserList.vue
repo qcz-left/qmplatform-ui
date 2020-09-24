@@ -103,7 +103,7 @@
           type: 'warning'
         }).then(() => {
           this.$del('/system/user/delUser/' + row.id, {}).then(res => {
-            if (res.code === 200) {
+            if (this.$respSuccess(res)) {
               this.$message.success('删除成功!');
               this.getList();
             } else {

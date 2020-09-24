@@ -56,12 +56,12 @@
         const res = await get('/system/user/validateLoginName', {
           loginname: value,
         });
-        if (res.code != 200) {
-          callback(new Error('登录名已存在，请重新输入！'))
-        } else {
+        if (this.$respSuccess(res)) {
           callback();
+        } else {
+          callback(new Error('登录名已存在，请重新输入！'))
         }
-      }
+      };
       return {
         // 弹窗标题
         dialogTitle: '',
@@ -133,7 +133,7 @@
        */
       submitResp(res) {
         this.loading = false;
-        if (res.code === 200) {
+        if (this.$respSuccess(res)) {
           this.$message.success("保存成功！");
           // 关闭弹窗
           this.closeDialog();

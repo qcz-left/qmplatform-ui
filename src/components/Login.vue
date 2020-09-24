@@ -59,7 +59,7 @@
         window.sessionStorage.setItem('token', "123456");
         this.$get('/oauth2/login', this.loginForm).then(res => {
           this.loading = false;
-          if (res.code !== 200) {
+          if (!this.$respSuccess(res)) {
             return this.$message.error('用户名或密码不正确！')
           }
           window.sessionStorage.setItem('token', res.data.accessToken);

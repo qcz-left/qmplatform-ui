@@ -1,5 +1,3 @@
-export default class common {
-  success(res) {
-    return res == 200;
-  }
+export function respSuccess(res) {
+  return res.code === 200;
 }
