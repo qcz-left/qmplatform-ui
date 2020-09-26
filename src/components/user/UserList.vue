@@ -3,7 +3,7 @@
     <div class="form-div">
       <el-form :inline="true" align="left">
         <el-form-item label="用户名">
-          <el-input placeholder="请输入内容" v-model="tableConfig.queryParams.username" clearable/>
+          <el-input v-model="tableConfig.queryParams.username" clearable/>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="tableConfig.queryParams.userSex" placeholder="请选择">
@@ -12,7 +12,10 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearchList" icon="el-icon-search">查询</el-button>
+        </el-form-item>
+        <el-form-item class="form-operate">
           <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="batchDelete()">批量删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -22,7 +25,7 @@
         <!--操作-->
         <template v-slot:operator="data">
           <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
+          <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <!--性别-->
         <template v-slot:userSex="data">
@@ -39,6 +42,7 @@
 <script>
   import UserForm from "./UserForm";
   import TablePagination from "../common/TablePagination";
+  import {getAttrFromArray, joinMulti} from "../../util/common";
 
   export default {
     name: "UserList",
@@ -96,21 +100,34 @@
        * 删除操作
        * @param row
        */
-      handleDelete(row) {
-        this.$confirm('此操作将永久删除 ' + row.username + ' 用户, 是否继续?', '警告', {
+      handleDelete(ids, names) {
+        let len = names.length;
+        this.$confirm('此操作将永久删除 <span class="text-danger">' + joinMulti(names) + '</span> ' + (len > 3 ? '等' : '') + '共 <span class="text-danger">' + names.length + '</span> 条记录, 是否继续?', '警告', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
+          dangerouslyUseHTMLString: true
         }).then(() => {
-          this.$del('/system/user/delUser/' + row.id, {}).then(res => {
+          this.$del('/system/user/delUser', {
+            userIds: joinMulti(ids)
+          }).then(res => {
             if (this.$respSuccess(res)) {
               this.$message.success('删除成功!');
               this.getList();
             } else {
               this.$message.error('删除失败!');
             }
+          }).catch(() => {
+
           });
         });
+      },
+      deleteOne(row) {
+        this.handleDelete([row.id], [row.username]);
+      },
+      batchDelete() {
+        let selected = this.$refs.tableRef.selected;
+        this.handleDelete(getAttrFromArray(selected, 'id'), getAttrFromArray(selected, 'username'))
       }
     }
   }

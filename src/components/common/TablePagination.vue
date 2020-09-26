@@ -1,8 +1,11 @@
 <template>
   <div class="component-div">
     <el-table :data="tableData" border stripe
+              ref="tableRef"
               v-loading="loading"
-              @sort-change="sortChange">
+              @sort-change="sortChange"
+              @row-click="rowClick"
+              @selection-change="selectChange">
       <template v-for="(column, index) in tableConfig.columns">
         <el-table-column
           v-if="column.type == 'slot'"
@@ -60,7 +63,8 @@
         layout: this.$parent.tableConfig.layout ? this.$parent.tableConfig.layout : 'total, sizes, prev, pager, next, jumper',
         total: 0,
         orderName: '',
-        order: ''
+        order: '',
+        selected: []
       }
     },
     created() {
@@ -98,6 +102,12 @@
         this.orderName = config.prop;
         this.order = config.order == 'ascending' ? 'asc' : (config.order == 'descending' ? 'desc' : '');
         this.getList();
+      },
+      selectChange(selected) {
+        this.selected = selected;
+      },
+      rowClick(row) {
+        this.$refs.tableRef.toggleRowSelection(row);
       }
     }
   }

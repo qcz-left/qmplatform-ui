@@ -2,6 +2,26 @@ html, body, .component-div {
   height: 100%;
 }
 
+.form-operate {
+  float: right;
+}
+
 .table-div {
   height: calc(100% - 62px);
+}
+
+.text-danger {
+  color: #F56C6C;
+}
+
+.text-success {
+  color: #67C23A;
+}
+
+.text-warning {
+  color: #E6A23C;
+}
+
+.text-info {
+  color: #909399;
 }

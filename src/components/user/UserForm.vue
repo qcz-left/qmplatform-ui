@@ -14,8 +14,7 @@
       v-if="centerDialogVisible"
       width="30%"
       center>
-      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef"
-               clearValidate>
+      <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username" clearable/>
         </el-form-item>
