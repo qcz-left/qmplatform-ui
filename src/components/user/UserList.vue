@@ -64,7 +64,8 @@
             {label: '电话', prop: 'phone'},
             {label: '邮箱', prop: 'emailAddr', sortable: true},
             {label: '操作', align: 'center', type: 'slot', slotName: 'operator'}
-          ]
+          ],
+          orderName: 'username'
         },
         // 性别下拉框数据
         optUserSex: [
@@ -72,7 +73,6 @@
           {value: '1', label: '男'},
           {value: '2', label: '女'}
         ],
-        centerDialogVisible: false,
         loading: false
       }
     },
@@ -87,7 +87,7 @@
        * 获取用户列表
        */
       getList() {
-        this.$refs.tableRef.getList(true);
+        this.$refs.tableRef.getList();
       },
       /**
        * 添加或编辑用户

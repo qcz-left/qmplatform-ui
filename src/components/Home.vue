@@ -111,14 +111,16 @@
   }
 
   .el-header {
-    background-color: rgb(84, 92, 100);
     color: #333;
     line-height: 60px;
   }
 
   .el-aside {
-    background-color: rgb(84, 92, 100);
     color: #333;
+  }
+
+  .el-header,.el-aside {
+    background-color: rgb(84, 92, 100);
   }
 
   .el-aside > .el-menu {

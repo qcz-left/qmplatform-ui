@@ -25,3 +25,11 @@ html, body, .component-div {
 .text-info {
   color: #909399;
 }
+/* dialog */
+.el-header,.el-aside,.el-dialog__header,.el-dialog__footer {
+  background-color: rgb(84, 92, 100);
+}
+
+.el-dialog__title {
+  color: white;
+}

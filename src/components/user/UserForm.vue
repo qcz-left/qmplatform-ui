@@ -11,8 +11,8 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       @close="closeDialog"
-      v-if="centerDialogVisible"
       width="30%"
+      v-if="centerDialogVisible"
       center>
       <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
         <el-form-item label="用户名" prop="username">
@@ -20,6 +20,12 @@
         </el-form-item>
         <el-form-item label="登录名" prop="loginname">
           <el-input v-model="editForm.loginname" :disabled="disableProp.loginname" clearable/>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input onfocus="this.type='password'" v-model="editForm.password" clearable/>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="passwordConfirm">
+          <el-input onfocus="this.type='password'" v-model="editForm.passwordConfirm" clearable/>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="editForm.userSex" placeholder="请选择">
@@ -47,6 +53,7 @@
 <script>
   import {validEmail, validPhone} from "../../util/validate";
   import {get} from '../../util/http'
+  import {respSuccess} from "../../util/common";
 
   export default {
     name: "UserForm",
@@ -54,17 +61,24 @@
       const validLoginName = async (rule, value, callback) => {
         const res = await get('/system/user/validateLoginName', {
           loginname: value,
+          userId: this.editForm.id
         });
-        if (this.$respSuccess(res)) {
+        if (respSuccess(res)) {
           callback();
         } else {
           callback(new Error('登录名已存在，请重新输入！'))
         }
       };
+      const validPasswordConfirm = (rule, value, callback) => {
+        if (value == this.editForm.password) {
+          callback()
+        } else {
+          callback(new Error('两次密码输入不一样，请重新输入！'))
+        }
+      };
       return {
         // 弹窗标题
         dialogTitle: '',
-        // 是否显示弹窗
         centerDialogVisible: false,
         // 表单提交遮罩
         loading: false,
@@ -78,6 +92,9 @@
           id: '',
           username: '',
           loginname: '',
+          password: '',
+          passwordConfirm: '',
+          oldPassword: '',
           userSex: '',
           phone: '',
           emailAddr: '',
@@ -86,12 +103,21 @@
         // 表单校验规则
         rules: {
           username: [
-            {required: true, message: '请填写用户名'}
+            {required: true, message: '请输入用户名'}
           ],
           loginname: [
-            {required: true, message: '请填写登录名'},
-            {min: 3, max: 5, message: '长度在 3 到 5 个字符'},
+            {required: true, message: '请输入登录名'},
+            {min: 3, max: 15, message: '长度在 3 到 15 个字符'},
             {validator: validLoginName, trigger: 'blur'}
+          ],
+          password: [
+            {required: true, message: '请输入密码'}
+          ],
+          passwordConfirm: [
+            {required: true, message: '请输入确认密码'},
+            {
+              validator: validPasswordConfirm, trigger: 'blur'
+            }
           ],
           phone: [
             {required: true, validator: validPhone, trigger: 'blur'}
@@ -145,16 +171,18 @@
       /**
        * 打开时填充表单
        */
-      openDialog(row) {
+      openDialog(data) {
         this.centerDialogVisible = true;
-        if (row) {
+        if (data) {
           // 设置弹窗标题
-          this.dialogTitle = '编辑用户【' + row.username + '】';
+          this.dialogTitle = '编辑用户【' + data.username + '】';
           // 不允许修改登录名
           this.disableProp.loginname = true;
-          delete this.rules.loginname;
           // 编辑，拷贝row中的值到editForm
-          Object.assign(this.editForm, row);
+          data.oldPassword = data.password;
+          data.password = '******';
+          data.passwordConfirm = '******';
+          Object.assign(this.editForm, data)
         } else {
           // 新增
           this.dialogTitle = '添加用户';
@@ -164,7 +192,12 @@
        * 关闭时重置
        */
       closeDialog() {
-        Object.assign(this.$data, this.$options.data());
+        this.$nextTick(() => {
+          this.$refs.editFormRef.resetFields();
+        });
+        this.centerDialogVisible = false;
+        this.editForm = this.$options.data().editForm;
+        this.disableProp = this.$options.data().disableProp;
       }
     }
   }

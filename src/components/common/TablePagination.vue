@@ -62,8 +62,8 @@
         pageSize: this.$parent.tableConfig.pageSize ? this.$parent.tableConfig.pageSize : 10,
         layout: this.$parent.tableConfig.layout ? this.$parent.tableConfig.layout : 'total, sizes, prev, pager, next, jumper',
         total: 0,
-        orderName: '',
-        order: '',
+        orderName: this.$parent.tableConfig.orderName ? this.$parent.tableConfig.orderName : '',
+        order: this.$parent.tableConfig.order ? this.$parent.tableConfig.order : '',
         selected: []
       }
     },
