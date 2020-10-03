@@ -30,6 +30,6 @@ html, body, .component-div {
   background-color: rgb(84, 92, 100);
 }
 
-.el-dialog__title {
-  color: white;
+.el-dialog__title,.el-dialog__close {
+  color: white !important;
 }

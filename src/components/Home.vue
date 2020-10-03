@@ -34,7 +34,8 @@
             active-text-color="#02af9f"
             router
             :collapse="isCollapse"
-            :collapse-transition="false">
+            :collapse-transition="false"
+            @select="menuSelected">
             <el-menu-item index="/welcome">
               <i class="el-icon-menu"></i>
               <span slot="title">主页</span>
@@ -95,6 +96,12 @@
       // 收起或展开折叠
       openOrCloseCollapse() {
         this.isCollapse = !this.isCollapse;
+      },
+      /**
+       * 菜单选择回调
+       */
+      menuSelected(index) {
+        window.sessionStorage.setItem('nowActive', index);
       }
     }
   }
