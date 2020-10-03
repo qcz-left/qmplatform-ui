@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 /**
  * http 响应成功
  * @param res
@@ -36,4 +38,13 @@ export function joinMulti(array) {
     result += "," + array[i];
   }
   return result.substring(1);
+}
+
+export function getAuth() {
+  let token = window.sessionStorage.getItem('token');
+  return jwt.decode(token);
+}
+
+export function getUserName() {
+  return getAuth()['sysUserName'];
 }

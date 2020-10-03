@@ -31,7 +31,7 @@
       return {
         loading: false,
         loginForm: {
-          username: 'user_1',
+          username: 'qcz',
           password: '123456'
         },
         // 这是表单的验证规则对象
@@ -56,7 +56,6 @@
       },
       loginSubmit() {
         this.loading = true;
-        window.sessionStorage.setItem('token', "123456");
         this.$get('/oauth2/login', this.loginForm).then(res => {
           this.loading = false;
           if (!this.$respSuccess(res)) {

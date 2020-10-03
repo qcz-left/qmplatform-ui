@@ -11,7 +11,7 @@
             active-text-color="#02af9f"
             mode="horizontal">
             <el-submenu index="1">
-              <template slot="title">系统管理员</template>
+              <template slot="title">你好，{{userName}}</template>
               <el-menu-item index="1-1">安全设置</el-menu-item>
             </el-submenu>
             <el-menu-item index="2">退出</el-menu-item>
@@ -75,12 +75,15 @@
 </template>
 
 <script>
+  import {getAuth, getUserName} from "../util/common";
+
   export default {
     name: "Home.vue",
     data() {
       return {
         isCollapse: false,
-        defaultActive: ''
+        defaultActive: '',
+        userName: getUserName()
       }
     },
     created() {
