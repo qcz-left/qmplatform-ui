@@ -5,7 +5,9 @@
               v-loading="loading"
               @sort-change="sortChange"
               @row-click="rowClick"
-              @selection-change="selectChange">
+              @selection-change="selectChange"
+              :row-key="tableConfig.rowKey"
+              :tree-props="{children: 'childes'}">
       <template v-for="(column, index) in tableConfig.columns">
         <el-table-column
           v-if="column.type == 'slot'"
@@ -34,7 +36,7 @@
       </template>
     </el-table>
     <el-pagination
-      v-if="typeof(tableConfig.pageable) == 'boolean' && !tableConfig.pageable ? false : true"
+      v-if="pageable"
       :align="tableConfig.paginationAlign ? tableConfig.paginationAlign : 'right'"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -61,6 +63,8 @@
         pageSizes: this.$parent.tableConfig.pageSizes ? this.$parent.tableConfig.pageSizes : [10, 50, 200, 1000],
         pageSize: this.$parent.tableConfig.pageSize ? this.$parent.tableConfig.pageSize : 10,
         layout: this.$parent.tableConfig.layout ? this.$parent.tableConfig.layout : 'total, sizes, prev, pager, next, jumper',
+        pageable: typeof(this.$parent.tableConfig.pageable) == 'boolean' && !this.$parent.tableConfig.pageable ? false : true,
+        treed: this.$parent.tableConfig.treed || false,
         total: 0,
         orderName: this.$parent.tableConfig.orderName ? this.$parent.tableConfig.orderName : '',
         order: this.$parent.tableConfig.order ? this.$parent.tableConfig.order : '',
@@ -85,7 +89,7 @@
         queryParams.orderName = this.orderName;
         queryParams.order = this.order;
         get(this.$parent.tableConfig.url, queryParams).then(res => {
-          this.tableData = res.data.list;
+          this.tableData = this.pageable ? res.data.list : res.data;
           this.total = res.data.count;
           this.loading = false;
         })

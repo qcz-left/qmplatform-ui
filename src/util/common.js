@@ -28,14 +28,15 @@ export function getAttrFromArray(array, attrName) {
  * @param array
  * @returns {*}
  */
-export function joinMulti(array) {
+export function joinMulti(array, split) {
+  split = split || ',';
   let result = "";
   let arrLen = array.length;
   for (let i = 0; i < arrLen; i++) {
     if (i > 2) {
       break;
     }
-    result += "," + array[i];
+    result += split + array[i];
   }
   return result.substring(1);
 }

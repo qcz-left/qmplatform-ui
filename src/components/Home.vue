@@ -49,7 +49,7 @@
               <el-menu-item index="2-3"><i class="el-icon-location"></i>角色管理</el-menu-item>
               <el-menu-item index="2-4"><i class="el-icon-location"></i>部门管理</el-menu-item>
               <el-menu-item index="2-5"><i class="el-icon-location"></i>图标管理</el-menu-item>
-              <el-menu-item index="2-2"><i class="el-icon-location"></i>菜单管理</el-menu-item>
+              <el-menu-item index="/menuList"><i class="el-icon-location"></i>菜单管理</el-menu-item>
             </el-submenu>
             <el-menu-item index="3">
               <i class="el-icon-document"></i>

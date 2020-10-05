@@ -72,8 +72,7 @@
           {value: '', label: '全部'},
           {value: '1', label: '男'},
           {value: '2', label: '女'}
-        ],
-        loading: false
+        ]
       }
     },
     created() {
