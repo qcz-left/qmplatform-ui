@@ -37,6 +37,10 @@ import {
   Loading
 } from 'element-ui'
 
+Element.MessageBox.props.dangerouslyUseHTMLString = true;
+Element.Dialog.props.closeOnClickModal = false;
+Element.Dialog.props.closeOnPressEscape = false;
+
 Vue.use(Loading);
 Vue.use(Tag);
 Vue.use(Dropdown);

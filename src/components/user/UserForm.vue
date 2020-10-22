@@ -2,14 +2,8 @@
   <div>
     <!-- 用户表单 -->
     <el-dialog
-      v-loading="loading"
-      element-loading-text="正在保存数据..."
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
       :title="dialogTitle"
       :visible="true"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
       @close="closeDialog"
       width="30%"
       v-if="centerDialogVisible"
@@ -43,9 +37,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-            <el-button @click="closeDialog">取 消</el-button>
-            <el-button type="primary" @click="submitForm">确 定</el-button>
-          </span>
+        <el-button @click="closeDialog">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -54,6 +48,7 @@
   import {validEmail, validPhone} from "../../util/validate";
   import {get} from '../../util/http'
   import {respSuccess} from "../../util/common";
+  import {showLoading} from "../../plugins/loading";
 
   export default {
     name: "UserForm",
@@ -80,8 +75,6 @@
         // 弹窗标题
         dialogTitle: '',
         centerDialogVisible: false,
-        // 表单提交遮罩
-        loading: false,
         // 性别下拉框数据
         optUserSex: [
           {value: '1', label: '男'},
@@ -140,14 +133,14 @@
         this.$refs.editFormRef.validate(valid => {
           if (valid) {
             // 数据校验成功，提交表单
-            this.loading = true;
+            let loading = showLoading();
             if (this.editForm.id) {
               this.$put("/system/user/updateUser", this.editForm).then(res => {
-                this.submitResp(res);
+                this.submitResp(res, loading);
               })
             } else {
               this.$post('/system/user/addUser', this.editForm).then(res => {
-                this.submitResp(res);
+                this.submitResp(res, loading);
               })
             }
           }
@@ -156,8 +149,10 @@
       /**
        * 表单提交后的响应
        */
-      submitResp(res) {
-        this.loading = false;
+      submitResp(res, loading) {
+        this.$nextTick(() => {
+          loading.close();
+        });
         if (this.$respSuccess(res)) {
           this.$message.success("保存成功！");
           // 关闭弹窗

@@ -1,14 +1,8 @@
 <template>
   <div>
     <el-dialog
-      v-loading="loading"
-      element-loading-text="正在保存数据..."
-      element-loading-spinner="el-icon-loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)"
       :title="dialogTitle"
       :visible="true"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
       @close="closeDialog"
       width="30%"
       v-if="centerDialogVisible"
@@ -42,6 +36,8 @@
 </template>
 
 <script>
+  import {showLoading} from "../../plugins/loading";
+
   export default {
     name: "MenuForm",
     data() {
@@ -49,8 +45,6 @@
         // 弹窗标题
         dialogTitle: '',
         centerDialogVisible: false,
-        // 表单提交遮罩
-        loading: false,
         // 表单编辑参数
         editForm: {
           menuName: '',
@@ -71,14 +65,14 @@
         this.$refs.editFormRef.validate(valid => {
           if (valid) {
             // 数据校验成功，提交表单
-            this.loading = true;
+            let loading = showLoading();
             if (this.editForm.id) {
               this.$put("/system/menu/updateMenu", this.editForm).then(res => {
-                this.submitResp(res);
+                this.submitResp(res, loading);
               })
             } else {
               this.$post('/system/menu/addMenu', this.editForm).then(res => {
-                this.submitResp(res);
+                this.submitResp(res, loading);
               })
             }
           }
@@ -87,8 +81,10 @@
       /**
        * 表单提交后的响应
        */
-      submitResp(res) {
-        this.loading = false;
+      submitResp(res, loading) {
+        this.$nextTick(() => {
+          loading.close();
+        });
         if (this.$respSuccess(res)) {
           this.$message.success("保存成功！");
           // 关闭弹窗
