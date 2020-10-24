@@ -58,7 +58,7 @@
     data() {
       return {
         tableData: [],
-        loading: this.$parent.tableConfig.loading || false,
+        loading: false,
         currentPage: this.$parent.tableConfig.currentPage ? this.$parent.tableConfig.currentPage : 1,
         pageSizes: this.$parent.tableConfig.pageSizes ? this.$parent.tableConfig.pageSizes : [10, 50, 200, 1000],
         pageSize: this.$parent.tableConfig.pageSize ? this.$parent.tableConfig.pageSize : 10,
@@ -77,7 +77,7 @@
     methods: {
       getList(reset) {
         this.loading = true;
-        let queryParams = this.$parent.tableConfig.queryParams;
+        let queryParams = this.$parent.tableConfig.queryParams || {};
         if (reset) {
           this.currentPage = 1;
           this.pageSize = this.$parent.tableConfig.pageSize ? this.$parent.tableConfig.pageSize : 10;

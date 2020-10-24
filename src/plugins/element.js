@@ -37,9 +37,17 @@ import {
   Loading
 } from 'element-ui'
 
-Element.MessageBox.props.dangerouslyUseHTMLString = true;
-Element.Dialog.props.closeOnClickModal = false;
-Element.Dialog.props.closeOnPressEscape = false;
+MessageBox.setDefaults({
+  dangerouslyUseHTMLString: true,
+  showCancelButton: true,
+  closeOnClickModal: false,
+  closeOnPressEscape: false,
+  center: true
+})
+Dialog.props.closeOnClickModal.default = false;
+Dialog.props.closeOnPressEscape.default = false;
+Dialog.props.center.default = true;
+Input.props.clearable.default = true;
 
 Vue.use(Loading);
 Vue.use(Tag);

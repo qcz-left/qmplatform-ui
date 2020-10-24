@@ -26,10 +26,28 @@ html, body, .component-div {
   color: #909399;
 }
 /* dialog */
-.el-header,.el-aside,.el-dialog__header,.el-dialog__footer {
+/*.el-header,.el-aside,.el-dialog__header,.el-dialog__footer {
   background-color: rgb(84, 92, 100);
 }
 
 .el-dialog__title,.el-dialog__close {
   color: white !important;
+}*/
+
+.el-dialog {
+  border-radius: 4px;
+}
+
+.el-message-box {
+  min-width: 25%;
+}
+
+.el-message-box .el-message-box__btns .el-button {
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.el-form-item__content {
+  text-align: left;
 }

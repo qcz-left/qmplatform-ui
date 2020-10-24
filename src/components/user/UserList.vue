@@ -3,7 +3,7 @@
     <div class="form-div">
       <el-form :inline="true" align="left">
         <el-form-item label="用户名">
-          <el-input v-model="tableConfig.queryParams.username" clearable/>
+          <el-input v-model="tableConfig.queryParams.username"/>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="tableConfig.queryParams.userSex" placeholder="请选择">
@@ -24,7 +24,7 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(data.row.id)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <!--性别-->
@@ -43,6 +43,7 @@
   import UserForm from "./UserForm";
   import TablePagination from "../common/TablePagination";
   import {getAttrFromArray, joinMulti} from "../../util/common";
+  import {Msg, StatusType} from "../../util/constant";
 
   export default {
     name: "UserList",
@@ -92,8 +93,8 @@
        * 添加或编辑用户
        * @param row
        */
-      handleEdit(row) {
-        this.$refs.userFormRef.openDialog(row);
+      handleEdit(id) {
+        this.$refs.userFormRef.openDialog(id);
       },
       /**
        * 删除操作
@@ -101,6 +102,10 @@
        */
       handleDelete(ids, names) {
         let len = names.length;
+        if (len == 0) {
+          this.$message.warning('请至少选择一条数据');
+          return;
+        }
         this.$confirm('此操作将永久删除 <span class="text-danger">' + joinMulti(names) + '</span> ' + (len > 3 ? '等' : '') + '共 <span class="text-danger">' + names.length + '</span> 条记录, 是否继续?', '警告', {
           type: StatusType.WARNING
         }).then(() => {
@@ -108,10 +113,10 @@
             userIds: joinMulti(ids)
           }).then(res => {
             if (this.$respSuccess(res)) {
-              this.$message.success('删除成功!');
+              this.$message.success(Msg.DELETE_SUCCESS);
               this.getList();
             } else {
-              this.$message.error('删除失败!');
+              this.$message.error(Msg.DELETE_FAILURE);
             }
           }).catch(() => {
 

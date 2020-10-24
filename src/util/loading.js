@@ -8,3 +8,7 @@ export function showLoading(msg) {
     background: 'rgba(0, 0, 0, 0.8)'
   });
 }
+
+export function dataLoading() {
+  return showLoading('正在加载数据，请稍后...');
+}

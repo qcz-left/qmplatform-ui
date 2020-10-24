@@ -6,20 +6,20 @@
       :visible="true"
       @close="closeDialog"
       width="30%"
-      v-if="centerDialogVisible"
-      center>
+      v-dialog-drag
+      v-if="centerDialogVisible">
       <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
         <el-form-item label="用户名" prop="username">
-          <el-input v-model="editForm.username" clearable/>
+          <el-input v-model="editForm.username"/>
         </el-form-item>
         <el-form-item label="登录名" prop="loginname">
-          <el-input v-model="editForm.loginname" :disabled="disableProp.loginname" clearable/>
+          <el-input v-model="editForm.loginname" :disabled="disableProp.loginname"/>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input onfocus="this.type='password'" v-model="editForm.password" clearable/>
+          <el-input onfocus="this.type='password'" v-model="editForm.password"/>
         </el-form-item>
         <el-form-item label="确认密码" prop="passwordConfirm">
-          <el-input onfocus="this.type='password'" v-model="editForm.passwordConfirm" clearable/>
+          <el-input onfocus="this.type='password'" v-model="editForm.passwordConfirm"/>
         </el-form-item>
         <el-form-item label="性别">
           <el-select v-model="editForm.userSex" placeholder="请选择">
@@ -27,10 +27,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="电话" prop="phone">
-          <el-input v-model="editForm.phone" clearable/>
+          <el-input v-model="editForm.phone"/>
         </el-form-item>
         <el-form-item label="邮箱" prop="emailAddr">
-          <el-input v-model="editForm.emailAddr" clearable/>
+          <el-input v-model="editForm.emailAddr"/>
         </el-form-item>
         <el-form-item label="备注">
           <el-input type="textarea" v-model="editForm.remark"/>
@@ -48,7 +48,8 @@
   import {validEmail, validPhone} from "../../util/validate";
   import {get} from '../../util/http'
   import {respSuccess} from "../../util/common";
-  import {showLoading} from "../../plugins/loading";
+  import {Msg} from "../../util/constant";
+  import {showLoading} from "../../util/loading";
 
   export default {
     name: "UserForm",
@@ -154,30 +155,32 @@
           loading.close();
         });
         if (this.$respSuccess(res)) {
-          this.$message.success("保存成功！");
+          this.$message.success(Msg.SAVE_SUCCESS);
           // 关闭弹窗
           this.closeDialog();
           // 刷新列表数据
           this.$parent.getList();
         } else {
-          this.$message.error("保存失败！");
+          this.$message.error(Msg.SAVE_FAILURE);
         }
       },
       /**
        * 打开时填充表单
        */
-      openDialog(data) {
+      openDialog(id) {
         this.centerDialogVisible = true;
-        if (data) {
+        if (id) {
           // 设置弹窗标题
-          this.dialogTitle = '编辑用户【' + data.username + '】';
+          this.dialogTitle = '编辑用户';
           // 不允许修改登录名
           this.disableProp.loginname = true;
           // 编辑，拷贝row中的值到editForm
-          data.oldPassword = data.password;
-          data.password = '******';
-          data.passwordConfirm = '******';
-          Object.assign(this.editForm, data)
+          this.$get('/system/user/getUser/' + id, {}).then(data => {
+            data.oldPassword = data.password;
+            data.password = '******';
+            data.passwordConfirm = '******';
+            this.editForm = data;
+          });
         } else {
           // 新增
           this.dialogTitle = '添加用户';
@@ -187,9 +190,6 @@
        * 关闭时重置
        */
       closeDialog() {
-        this.$nextTick(() => {
-          this.$refs.editFormRef.resetFields();
-        });
         this.centerDialogVisible = false;
         this.editForm = this.$options.data().editForm;
         this.disableProp = this.$options.data().disableProp;
