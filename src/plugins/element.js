@@ -34,7 +34,10 @@ import {
   Dropdown,
   Tag,
   MessageBox,
-  Loading
+  Loading,
+  Cascader,
+  Popover,
+  Tree
 } from 'element-ui'
 
 MessageBox.setDefaults({
@@ -49,6 +52,9 @@ Dialog.props.closeOnPressEscape.default = false;
 Dialog.props.center.default = true;
 Input.props.clearable.default = true;
 
+Vue.use(Tree);
+Vue.use(Popover);
+Vue.use(Cascader);
 Vue.use(Loading);
 Vue.use(Tag);
 Vue.use(Dropdown);
