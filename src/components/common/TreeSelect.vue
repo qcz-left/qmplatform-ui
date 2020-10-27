@@ -75,7 +75,7 @@
       handleNodeClick(node) {
         this.valueTitle = node[this.props.label]
         this.valueId = node[this.props.value]
-        this.$emit('getValue', this.valueId)
+        this.$emit('onSelect', this.valueId)
         this.defaultExpandedKey = [];
       },
       // 清除选中
@@ -84,7 +84,7 @@
         this.valueId = null
         this.defaultExpandedKey = []
         this.clearSelected()
-        this.$emit('getValue', null)
+        this.$emit('onSelect', null)
       },
       // 清空选中样式
       clearSelected() {
@@ -101,7 +101,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
     height: auto;
     max-height: 274px;

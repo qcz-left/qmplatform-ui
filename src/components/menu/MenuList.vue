@@ -26,10 +26,8 @@
 
 <script>
   import TablePagination from "../common/TablePagination";
-  import {getAttrFromArray, joinMulti} from "../../util/common";
   import MenuForm from "./MenuForm";
   import {Msg, MsgBoxAction, StatusType} from "../../util/constant";
-  import {del} from "../../util/http";
 
   export default {
     name: "MenuList",

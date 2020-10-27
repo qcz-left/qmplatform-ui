@@ -10,11 +10,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="所属上级" prop="parentId">
-        <tree-select :options="menuTree"
-                     :value="editForm.parentId"
+        <tree-select v-model="editForm.parentId"
+                     :options="menuTree"
                      :clearable="true"
-                     :accordion="true"
-                     @getValue="getValue"/>
+                     :accordion="true"/>
       </el-form-item>
       <el-form-item label="权限码" prop="code">
         <el-input v-model="editForm.code"/>
