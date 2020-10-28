@@ -11,7 +11,8 @@
       </el-form-item>
       <el-form-item label="所属上级" prop="parentId">
         <tree-select v-model="editForm.parentId"
-                     :options="menuTree"
+                     :url="treeOption.url"
+                     :queryParams="treeOption.queryParams"
                      :clearable="true"
                      :accordion="true"/>
       </el-form-item>
@@ -54,7 +55,13 @@
           iorder: 0,
           permissionType: ''
         },
-        menuTree: [],
+        treeOption: {
+          url: '/system/menu/getMenuList',
+          queryParams: {
+            permissionType: 1,
+            permissionId: this.$parent.data.permissionId
+          }
+        },
         // 表单校验规则
         rules: {
           permissionName: [
@@ -78,23 +85,18 @@
         }
       }
     },
-    async created() {
+    mounted() {
       let permissionId = this.$parent.data.permissionId;
       if (permissionId) {
         this.disableProp.permissionType = true;
+        let loading = this.$parent.openLoading();
         this.$get('/system/menu/getPermissionOne/' + permissionId, {}).then(result => {
+          loading.close();
           this.editForm = result.data;
         });
       }
-      let {result: data} = await this.$get('/system/menu/getMenuList', {
-        permissionType: 1
-      });
-      this.menuTree = data;
     },
     methods: {
-      getValue(value) {
-        this.editForm.parentId = value;
-      },
       /**
        * 提交表单
        */

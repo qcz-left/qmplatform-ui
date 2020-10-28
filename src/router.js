@@ -5,6 +5,7 @@ import Login from './components/Login'
 import Welcome from './components/Welcome'
 import UserList from "./components/user/UserList";
 import MenuList from "./components/menu/MenuList";
+import { Message } from 'element-ui';
 
 Vue.use(Router);
 
@@ -35,6 +36,7 @@ router.beforeEach((to, from, next) => {
   // 获取token
   const tokenStr = window.sessionStorage.getItem('token');
   if (!tokenStr) {
+    Message.warning('当前会话已过期，请重新登录！')
     return next('/login')
   }
   next();

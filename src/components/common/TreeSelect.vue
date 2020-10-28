@@ -1,11 +1,11 @@
 <template>
-  <el-select :value="valueTitle" :clearable="clearable" @clear="clearHandle">
+  <el-select ref="selectRef" :value="valueTitle" :clearable="clearable" @clear="clearHandle">
     <el-option :value="valueTitle" :label="valueTitle" class="options">
       <el-tree
         id="tree-option"
         ref="selectTree"
         :accordion="accordion"
-        :data="options"
+        :data="treeData"
         :props="props"
         :node-key="props.value"
         :default-expanded-keys="defaultExpandedKey"
@@ -39,26 +39,44 @@
       clearable: {type: Boolean, default: true},
 
       // 自动收起
-      accordion: {type: Boolean, default: false}
+      accordion: {type: Boolean, default: false},
+      // 远程加载数据url
+      url: {type: String, default: null},
+      queryParams: {
+        type: Object,
+        default: () => ({})
+      }
     },
     data() {
       return {
+        treeData: this.options,
         valueId: null,
         valueTitle: '',
         defaultExpandedKey: []
       }
     },
     mounted() {
-      this.valueId = this.value
-      this.initHandle()
+      if (this.url) {
+        this.$get(this.url, this.queryParams).then(result => {
+          this.treeData = result.data;
+          this.initHandle();
+        });
+      } else {
+        this.initHandle()
+      }
     },
     methods: {
       // 初始化值
       initHandle() {
         if (this.valueId) {
-          this.valueTitle = this.$refs.selectTree.getNode(this.valueId).data[this.props.label]     // 初始化显示
-          this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
-          this.defaultExpandedKey = [this.valueId]      // 设置默认展开
+          this.$nextTick(() => {
+            let node = this.$refs.selectTree.getNode(this.valueId);
+            if (node) {
+              this.valueTitle = node.data[this.props.label]     // 初始化显示
+              this.$refs.selectTree.setCurrentKey(this.valueId)       // 设置默认选中
+              this.$refs.selectRef.blur();
+            }
+          })
         }
         this.initScroll()
       },
@@ -75,7 +93,7 @@
       handleNodeClick(node) {
         this.valueTitle = node[this.props.label]
         this.valueId = node[this.props.value]
-        this.$emit('onSelect', this.valueId)
+        this.$emit('input', this.valueId)
         this.defaultExpandedKey = [];
       },
       // 清除选中
@@ -84,7 +102,7 @@
         this.valueId = null
         this.defaultExpandedKey = []
         this.clearSelected()
-        this.$emit('onSelect', null)
+        this.$emit('input', null)
       },
       // 清空选中样式
       clearSelected() {
@@ -94,14 +112,14 @@
     },
     watch: {
       value() {
-        this.valueId = this.value
-        this.initHandle()
+        this.valueId = this.value;
+        this.initHandle();
       }
-    },
+    }
   }
 </script>
 
-<style lang="less" scoped>
+<style scoped>
   .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
     height: auto;
     max-height: 274px;
