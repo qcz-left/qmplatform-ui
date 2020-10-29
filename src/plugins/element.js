@@ -49,7 +49,7 @@ MessageBox.setDefaults({
 })
 Dialog.props.closeOnClickModal.default = false;
 Dialog.props.closeOnPressEscape.default = false;
-Dialog.props.center.default = true;
+// Dialog.props.center.default = true;
 Input.props.clearable.default = true;
 
 Vue.use(Tree);

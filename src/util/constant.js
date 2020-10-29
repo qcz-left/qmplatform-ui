@@ -22,6 +22,14 @@ export const StatusType  = {
 
 export const Msg = {
   /**
+   * 操作成功
+   */
+  OPERATE_SUCCESS: '操作成功！',
+  /**
+   * 操作失败
+   */
+  OPERATE_FAILURE: '操作失败！',
+  /**
    * 保存成功
    */
   SAVE_SUCCESS: '保存成功！',

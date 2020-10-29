@@ -36,6 +36,7 @@
   import {showLoading} from "../../util/loading";
   import {Msg} from "../../util/constant";
   import TreeSelect from "../common/TreeSelect";
+  import {respMsg} from "../../util/common";
 
   export default {
     name: "MenuForm",
@@ -109,15 +110,11 @@
               this.$nextTick(() => {
                 loading.close();
               });
-              let success = this.$respSuccess(res);
-              if (success) {
-                this.$message.success(Msg.SAVE_SUCCESS);
+              respMsg(res, Msg.SAVE_SUCCESS, Msg.SAVE_FAILURE, () => {
                 done();
                 // 刷新列表数据
                 _list.getList();
-              } else {
-                this.$message.error(Msg.SAVE_FAILURE);
-              }
+              })
             })
           }
         });

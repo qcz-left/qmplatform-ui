@@ -42,7 +42,7 @@
 <script>
   import UserForm from "./UserForm";
   import TablePagination from "../common/TablePagination";
-  import {getAttrFromArray, joinMulti} from "../../util/common";
+  import {getAttrFromArray, joinMulti, respMsg} from "../../util/common";
   import {Msg, StatusType} from "../../util/constant";
 
   export default {
@@ -112,12 +112,9 @@
           this.$del('/system/user/delUser', {
             userIds: joinMulti(ids)
           }).then(res => {
-            if (this.$respSuccess(res)) {
-              this.$message.success(Msg.DELETE_SUCCESS);
-              this.getList();
-            } else {
-              this.$message.error(Msg.DELETE_FAILURE);
-            }
+            respMsg(res, Msg.DELETE_SUCCESS, Msg.DELETE_FAILURE, () => {
+              this.getList()
+            })
           }).catch(() => {
 
           });

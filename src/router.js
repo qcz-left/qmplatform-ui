@@ -5,6 +5,7 @@ import Login from './components/Login'
 import Welcome from './components/Welcome'
 import UserList from "./components/user/UserList";
 import MenuList from "./components/menu/MenuList";
+import Role from './components/role/Role'
 import { Message } from 'element-ui';
 
 Vue.use(Router);
@@ -19,7 +20,8 @@ const router = new Router({
       children: [
         {path: '/welcome', component: Welcome},
         {path: '/userList', component: UserList},
-        {path: '/menuList', component: MenuList}
+        {path: '/menuList', component: MenuList},
+        {path: '/role', component: Role}
       ]
     }
   ]

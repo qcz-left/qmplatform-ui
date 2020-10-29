@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken'
+import {Msg} from "./constant";
+import {Message} from "element-ui";
 
 /**
  * http 响应成功
@@ -7,6 +9,20 @@ import jwt from 'jsonwebtoken'
  */
 export function respSuccess(res) {
   return res.code === 200;
+}
+
+export function respMsg(res, successMsg, failMsg, successCallback, failCallback) {
+  if (respSuccess(res)) {
+    Message.success(successMsg || Msg.OPERATE_SUCCESS)
+    if (typeof(successCallback) == "function") {
+      successCallback()
+    }
+  } else {
+    Message.success(failMsg || Msg.OPERATE_FAILURE)
+    if (typeof(failCallback) == "function") {
+      failCallback()
+    }
+  }
 }
 
 /**

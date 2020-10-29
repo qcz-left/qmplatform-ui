@@ -47,7 +47,7 @@
 <script>
   import {validEmail, validPhone} from "../../util/validate";
   import {get} from '../../util/http'
-  import {respSuccess} from "../../util/common";
+  import {respMsg, respSuccess} from "../../util/common";
   import {Msg} from "../../util/constant";
   import {showLoading} from "../../util/loading";
 
@@ -154,15 +154,12 @@
         this.$nextTick(() => {
           loading.close();
         });
-        if (this.$respSuccess(res)) {
-          this.$message.success(Msg.SAVE_SUCCESS);
+        respMsg(res, Msg.SAVE_SUCCESS, Msg.SAVE_FAILURE, () => {
           // 关闭弹窗
           this.closeDialog();
           // 刷新列表数据
           this.$parent.getList();
-        } else {
-          this.$message.error(Msg.SAVE_FAILURE);
-        }
+        })
       },
       /**
        * 打开时填充表单
