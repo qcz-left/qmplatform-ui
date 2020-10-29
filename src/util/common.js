@@ -13,12 +13,12 @@ export function respSuccess(res) {
 
 export function respMsg(res, successMsg, failMsg, successCallback, failCallback) {
   if (respSuccess(res)) {
-    Message.success(successMsg || Msg.OPERATE_SUCCESS)
+    Message.success(res.msg || successMsg || Msg.OPERATE_SUCCESS)
     if (typeof(successCallback) == "function") {
       successCallback()
     }
   } else {
-    Message.success(failMsg || Msg.OPERATE_FAILURE)
+    Message.success(res.msg || failMsg || Msg.OPERATE_FAILURE)
     if (typeof(failCallback) == "function") {
       failCallback()
     }
