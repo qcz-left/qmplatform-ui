@@ -11,6 +11,7 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
+          <el-button size="mini" type="warning" icon="el-icon-thumb" @click="openPermissionDlg(data.row.roleId)">分配权限</el-button>
           <el-button size="mini" @click="handleEdit(data.row.roleId)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
         </template>
@@ -39,6 +40,27 @@
         <el-button type="primary" @click="submitForm">确 定</el-button>
       </span>
     </el-dialog>
+    <!--分配权限-->
+    <el-dialog
+      title="分配权限"
+      :visible="allotPerDlgVisiable"
+      width="20%"
+      @close="closePerDialog"
+      v-dialog-drag>
+      <el-tree
+        :data="permissionTree"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        ref="tree"
+        highlight-current
+        :props="defaultProps">
+      </el-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closePerDialog">取 消</el-button>
+        <el-button type="primary" @click="saveRolePermission">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,8 +78,6 @@
         tableConfig: {
           url: '/system/role/getRoleList',
           columns: [
-            {type: 'selection', width: 40},
-            {type: 'index', width: 40},
             {label: '角色名称', prop: 'roleName', sortable: true},
             {label: '角色标识', prop: 'roleSign'},
             {label: '描述', prop: 'remark'},
@@ -67,6 +87,7 @@
         },
         dialogTitle: '',
         formVisiable: false,
+        allotPerDlgVisiable: false,
         editForm: {
           roleId: '',
           roleName: '',
@@ -77,13 +98,45 @@
           roleName: [
             {required: true, message: '请输入角色名称'}
           ]
-        }
+        },
+        permissionTree: [],
+        defaultProps: {
+          value: 'id',
+          label: 'name',
+          children: 'childes'
+        },
+        dlgRoleId: ''
       }
     },
     mounted() {
 
     },
     methods: {
+      /**
+       * 保存角色权限
+       */
+      saveRolePermission() {
+        let checkedKeys = this.$refs.tree.getCheckedKeys();
+        this.$post('/system/role/saveRolePermission', {
+          roleId: this.dlgRoleId,
+          permissionIds: checkedKeys
+        }).then(result => {
+          respMsg(result, '分配权限成功', '分配权限失败', () => {
+            this.closePerDialog()
+          })
+        })
+      },
+      openPermissionDlg(roleId) {
+        this.allotPerDlgVisiable = true
+        this.dlgRoleId = roleId
+        this.$get('/system/role/getRolePermission/' + roleId, {}).then(result => {
+          let permissionIds = result.data;
+          this.$get('/system/menu/getMenuList', {}).then(result => {
+            this.permissionTree = result.data
+            this.$refs.tree.setCheckedKeys(permissionIds)
+          });
+        })
+      },
       /**
        * 获取列表
        */
@@ -111,7 +164,8 @@
        */
       handleDelete(row) {
         this.$confirm('此操作将永久删除 <span class="text-danger">' + row.roleName + '</span>，是否继续?', '警告', {
-          type: StatusType.WARNING
+          type: StatusType.WARNING,
+          confirmButtonClass: 'el-button--warning'
         }).then(() => {
           this.$del('/system/role/deleteRole', {
             roleIds: row.roleId
@@ -119,8 +173,8 @@
             respMsg(res, Msg.DELETE_SUCCESS, Msg.DELETE_FAILURE, () => {
               this.getList()
             })
-          }).catch(() => {
-
+          }).catch((error) => {
+            console.log(error)
           });
         });
       },
@@ -133,15 +187,10 @@
               this.$nextTick(() => {
                 loading.close();
               });
-              let success = this.$respSuccess(res);
-              if (success) {
-                this.$message.success(Msg.SAVE_SUCCESS);
+              respMsg(res, Msg.SAVE_SUCCESS, Msg.SAVE_FAILURE, () => {
                 this.closeDialog()
-                // 刷新列表数据
                 this.getList();
-              } else {
-                this.$message.error(Msg.SAVE_FAILURE);
-              }
+              })
             })
           }
         });
@@ -150,6 +199,10 @@
         this.formVisiable = false
         this.editForm = this.$options.data().editForm
         this.$refs.editFormRef.resetFields()
+      },
+      closePerDialog() {
+        this.allotPerDlgVisiable = false
+        this.permissionTree = this.$options.data().permissionTree
       }
     }
   }

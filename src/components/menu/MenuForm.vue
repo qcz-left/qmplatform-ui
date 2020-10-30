@@ -90,9 +90,7 @@
       let permissionId = this.$parent.data.permissionId;
       if (permissionId) {
         this.disableProp.permissionType = true;
-        let loading = this.$parent.openLoading();
         this.$get('/system/menu/getPermissionOne/' + permissionId, {}).then(result => {
-          loading.close();
           this.editForm = result.data;
         });
       }

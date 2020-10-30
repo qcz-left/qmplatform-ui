@@ -18,7 +18,7 @@ export function respMsg(res, successMsg, failMsg, successCallback, failCallback)
       successCallback()
     }
   } else {
-    Message.success(res.msg || failMsg || Msg.OPERATE_FAILURE)
+    Message.error(res.msg || failMsg || Msg.OPERATE_FAILURE)
     if (typeof(failCallback) == "function") {
       failCallback()
     }

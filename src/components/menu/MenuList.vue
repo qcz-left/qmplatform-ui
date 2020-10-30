@@ -96,7 +96,8 @@
        */
       handleDelete(id, name, type) {
         this.$confirm('此操作将永久删除 <span class="text-danger">' + name + '</span> , 是否继续?', '警告', {
-          type: StatusType.WARNING
+          type: StatusType.WARNING,
+          confirmButtonClass: 'el-button--warning'
         }).then(() => {
           let delUrl;
           if (type == '1') {

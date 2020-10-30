@@ -107,7 +107,8 @@
           return;
         }
         this.$confirm('此操作将永久删除 <span class="text-danger">' + joinMulti(names) + '</span> ' + (len > 3 ? '等' : '') + '共 <span class="text-danger">' + names.length + '</span> 条记录, 是否继续?', '警告', {
-          type: StatusType.WARNING
+          type: StatusType.WARNING,
+          confirmButtonClass: 'el-button--warning'
         }).then(() => {
           this.$del('/system/user/delUser', {
             userIds: joinMulti(ids)
