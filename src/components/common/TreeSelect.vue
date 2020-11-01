@@ -1,9 +1,10 @@
 <template>
-  <el-select ref="selectRef" :value="valueTitle" :clearable="clearable" @clear="clearHandle" :multiple="multiple">
+  <el-select ref="selectRef" v-model="valueTitle" :clearable="clearable" @clear="clearHandle" :multiple="multiple" :remove-tag="removeTag">
     <el-option :value="valueTitle" :label="valueTitle" class="options">
       <el-tree
         id="tree-option"
         ref="selectTree"
+        check-strictly
         :show-checkbox="multiple"
         :accordion="accordion"
         :data="treeData"
@@ -55,7 +56,7 @@
       return {
         treeData: this.options,
         valueId: null,
-        valueTitle: '',
+        valueTitle: null,
         defaultExpandedKey: []
       }
     },
@@ -70,10 +71,18 @@
       }
     },
     methods: {
-      checked(node, checked) {
-        console.log(node)
-        console.log(checked)
-        this.$emit('input', checked.checkedKeys);
+      removeTag(tag) {
+        console.log(tag)
+      },
+      checked(checked, allChecked) {
+        this.$emit('input', allChecked.checkedKeys);
+        let checkedNodes = allChecked.checkedNodes;
+        let checkedName = []
+        checkedNodes.forEach(node => {
+          checkedName.push(node.name)
+        })
+        this.valueTitle = checkedName
+        // this.$emit('onSelect', checked.checkedKeys);
       },
       // 初始化值
       initHandle() {
@@ -100,6 +109,9 @@
       },
       // 切换选项
       handleNodeClick(node) {
+        if (this.multiple) {
+          return
+        }
         this.valueTitle = node[this.props.label]
         this.valueId = node[this.props.value]
         this.$emit('input', this.valueId)
@@ -153,6 +165,11 @@
   .el-tree >>> .is-current .el-tree-node__label {
     color: #409EFF;
     font-weight: 700;
+  }
+
+  .el-tree >>> .multiple-default {
+    color: unset;
+    font-weight: unset;
   }
 
   .el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {

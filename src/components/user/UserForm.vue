@@ -3,7 +3,7 @@
     <!-- 用户表单 -->
     <el-dialog
       :title="dialogTitle"
-      :visible="true"
+      :visible="centerDialogVisible"
       @close="closeDialog"
       width="30%"
       v-dialog-drag
@@ -11,6 +11,12 @@
       <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">
         <el-form-item label="用户名" prop="username">
           <el-input v-model="editForm.username"/>
+        </el-form-item>
+        <el-form-item label="所属部门">
+          <tree-select v-model="editForm.organizationIds"
+                       :url="treeOption.url"
+                       :queryParams="treeOption.queryParams"
+                       :accordion="true"/>
         </el-form-item>
         <el-form-item label="登录名" prop="loginname">
           <el-input v-model="editForm.loginname" :disabled="disableProp.loginname"/>
@@ -50,9 +56,11 @@
   import {respMsg, respSuccess} from "../../util/common";
   import {Msg} from "../../util/constant";
   import {showLoading} from "../../util/loading";
+  import TreeSelect from "../common/TreeSelect";
 
   export default {
     name: "UserForm",
+    components: {TreeSelect},
     data() {
       const validLoginName = async (rule, value, callback) => {
         const res = await get('/system/user/validateLoginName', {
@@ -66,7 +74,7 @@
         }
       };
       const validPasswordConfirm = (rule, value, callback) => {
-        if (value == this.editForm.password) {
+        if (value === this.editForm.password) {
           callback()
         } else {
           callback(new Error('两次密码输入不一样，请重新输入！'))
@@ -92,7 +100,11 @@
           userSex: '',
           phone: '',
           emailAddr: '',
-          remark: ''
+          remark: '',
+          organizationIds: ''
+        },
+        treeOption: {
+          url: '/system/organization/getOrgList'
         },
         // 表单校验规则
         rules: {
@@ -135,31 +147,20 @@
           if (valid) {
             // 数据校验成功，提交表单
             let loading = showLoading();
-            if (this.editForm.id) {
-              this.$put("/system/user/updateUser", this.editForm).then(res => {
-                this.submitResp(res, loading);
+            this.editForm.organizationIds = [this.editForm.organizationIds]
+            this.$post('/system/user/saveUser', this.editForm).then(res => {
+              this.$nextTick(() => {
+                loading.close();
+              });
+              respMsg(res, Msg.SAVE_SUCCESS, Msg.SAVE_FAILURE, () => {
+                // 关闭弹窗
+                this.closeDialog();
+                // 刷新列表数据
+                this.$parent.getList();
               })
-            } else {
-              this.$post('/system/user/addUser', this.editForm).then(res => {
-                this.submitResp(res, loading);
-              })
-            }
+            })
           }
         });
-      },
-      /**
-       * 表单提交后的响应
-       */
-      submitResp(res, loading) {
-        this.$nextTick(() => {
-          loading.close();
-        });
-        respMsg(res, Msg.SAVE_SUCCESS, Msg.SAVE_FAILURE, () => {
-          // 关闭弹窗
-          this.closeDialog();
-          // 刷新列表数据
-          this.$parent.getList();
-        })
       },
       /**
        * 打开时填充表单
@@ -177,6 +178,9 @@
             data.password = '******';
             data.passwordConfirm = '******';
             this.editForm = data;
+            if (this.editForm.organizationIds) {
+              this.editForm.organizationIds = this.editForm.organizationIds[0]
+            }
           });
         } else {
           // 新增
