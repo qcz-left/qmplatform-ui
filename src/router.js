@@ -6,6 +6,7 @@ import Welcome from './components/Welcome'
 import UserList from "./components/user/UserList";
 import MenuList from "./components/menu/MenuList";
 import Role from './components/role/Role'
+import Organization from "./components/organization/Organization";
 import { Message } from 'element-ui';
 
 Vue.use(Router);
@@ -21,7 +22,8 @@ const router = new Router({
         {path: '/welcome', component: Welcome},
         {path: '/userList', component: UserList},
         {path: '/menuList', component: MenuList},
-        {path: '/role', component: Role}
+        {path: '/role', component: Role},
+        {path: '/organization', component: Organization}
       ]
     }
   ]

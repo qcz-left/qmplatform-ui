@@ -1,15 +1,17 @@
 <template>
-  <el-select ref="selectRef" :value="valueTitle" :clearable="clearable" @clear="clearHandle">
+  <el-select ref="selectRef" :value="valueTitle" :clearable="clearable" @clear="clearHandle" :multiple="multiple">
     <el-option :value="valueTitle" :label="valueTitle" class="options">
       <el-tree
         id="tree-option"
         ref="selectTree"
+        :show-checkbox="multiple"
         :accordion="accordion"
         :data="treeData"
         :props="props"
         :node-key="props.value"
         :default-expanded-keys="defaultExpandedKey"
-        @node-click="handleNodeClick">
+        @node-click="handleNodeClick"
+        @check="checked">
       </el-tree>
     </el-option>
   </el-select>
@@ -33,7 +35,7 @@
       options: {type: Array, default: () => []},
 
       // 初始值
-      value: {type: String, default: null},
+      value: {type: [String, Array], default: null},
 
       // 可清空选项
       clearable: {type: Boolean, default: true},
@@ -45,7 +47,9 @@
       queryParams: {
         type: Object,
         default: () => ({})
-      }
+      },
+      // 多选
+      multiple: {type: Boolean, default: false}
     },
     data() {
       return {
@@ -66,6 +70,11 @@
       }
     },
     methods: {
+      checked(node, checked) {
+        console.log(node)
+        console.log(checked)
+        this.$emit('input', checked.checkedKeys);
+      },
       // 初始化值
       initHandle() {
         if (this.valueId) {

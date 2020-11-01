@@ -66,13 +66,12 @@
        * @param row
        */
       handleEdit(id) {
-        const h = this.$createElement;
         this.index++;
         let _self = this;
         const editFormRef = 'editFormRef';
         this.$msgbox({
           title: id ? '编辑' : '添加',
-          message: h(MenuForm, {
+          message: this.$createElement(MenuForm, {
             key: this.index,
             ref: editFormRef
           }),
