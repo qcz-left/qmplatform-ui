@@ -11,7 +11,17 @@ axios.interceptors.request.use(config => {
 });
 
 axios.interceptors.response.use(response => {
-  redirectLogin(response.data.code);
+  let statusCode = response.data.code;
+  if (statusCode === 201) {
+    // 快过期了，token续期
+    this.$get('/oauth2/refreshToken', {
+      refreshToken: window.sessionStorage.getItem('refreshToken')
+    }).then(res => {
+      window.sessionStorage.setItem('token', res.data.accessToken);
+      window.sessionStorage.setItem('refreshToken', res.data.refreshToken);
+    })
+  }
+  redirectLogin(statusCode);
   return response;
 }, error => {
   redirectLogin(error.response.status);

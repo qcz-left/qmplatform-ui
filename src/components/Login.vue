@@ -62,6 +62,7 @@
             return this.$message.error('用户名或密码不正确！')
           }
           window.sessionStorage.setItem('token', res.data.accessToken);
+          window.sessionStorage.setItem('refreshToken', res.data.refreshToken);
           window.sessionStorage.setItem('nowActive', '/welcome');
           this.$router.push('/');
         });

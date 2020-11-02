@@ -8,7 +8,7 @@ import {Message} from "element-ui";
  * @returns {boolean}
  */
 export function respSuccess(res) {
-  return res.code === 200;
+  return res.code === 200 || res.code === 201;
 }
 
 export function respMsg(res, successMsg, failMsg, successCallback, failCallback) {
