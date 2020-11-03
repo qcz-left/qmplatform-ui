@@ -165,11 +165,11 @@
       /**
        * 打开时填充表单
        */
-      openDialog(id) {
+      openDialog(id, name) {
         this.centerDialogVisible = true;
         if (id) {
           // 设置弹窗标题
-          this.dialogTitle = '编辑用户';
+          this.dialogTitle = '编辑用户 - ' + name;
           // 不允许修改登录名
           this.disableProp.loginname = true;
           // 编辑，拷贝row中的值到editForm

@@ -8,6 +8,7 @@ html, body, .component-div {
 
 .table-div {
   height: calc(100% - 62px);
+  max-height: 800px;
 }
 
 .text-danger {

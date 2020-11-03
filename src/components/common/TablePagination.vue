@@ -124,5 +124,6 @@
 
   .el-table {
     height: 93%;
+    overflow-y: auto;
   }
 </style>

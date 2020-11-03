@@ -11,8 +11,8 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" type="warning" icon="el-icon-thumb" @click="openPermissionDlg(data.row.roleId)">分配权限</el-button>
-          <el-button size="mini" @click="handleEdit(data.row.roleId)">编辑</el-button>
+          <el-button size="mini" type="warning" icon="el-icon-thumb" @click="openPermissionDlg(data.row.roleId, data.row.roleName)">分配权限</el-button>
+          <el-button size="mini" @click="handleEdit(data.row.roleId, data.row.roleName)">编辑</el-button>
           <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
         </template>
       </table-pagination>
@@ -42,7 +42,7 @@
     </el-dialog>
     <!--分配权限-->
     <el-dialog
-      title="分配权限"
+      :title="allotPerTitle"
       :visible="allotPerDlgVisiable"
       width="20%"
       @close="closePerDialog"
@@ -105,7 +105,8 @@
           label: 'name',
           children: 'childes'
         },
-        dlgRoleId: ''
+        dlgRoleId: '',
+        allotPerTitle: ''
       }
     },
     mounted() {
@@ -126,7 +127,8 @@
           })
         })
       },
-      openPermissionDlg(roleId) {
+      openPermissionDlg(roleId, roleName) {
+        this.allotPerTitle = '分配权限 - ' + roleName
         this.allotPerDlgVisiable = true
         this.dlgRoleId = roleId
         this.$get('/system/role/getRolePermission/' + roleId, {}).then(result => {
@@ -147,9 +149,9 @@
        * 添加或编辑
        * @param row
        */
-      handleEdit(id) {
+      handleEdit(id, name) {
         if (id) {
-          this.dialogTitle = '编辑'
+          this.dialogTitle = '编辑 - ' + name
           this.$get('/system/role/getRoleOne/' + id, {}).then(result => {
             this.editForm = result.data;
           });

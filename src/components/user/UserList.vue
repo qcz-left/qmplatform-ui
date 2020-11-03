@@ -24,7 +24,8 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id)">编辑</el-button>
+          <el-button size="mini" type="warning" icon="el-icon-thumb" @click="openRoleDlg(data.row.id, data.row.username)">分配角色</el-button>
+          <el-button size="mini" @click="handleEdit(data.row.id, data.row.username)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <!--性别-->
@@ -64,7 +65,7 @@
             {label: '性别', prop: 'userSex', type: 'slot', slotName: 'userSex'},
             {label: '电话', prop: 'phone'},
             {label: '邮箱', prop: 'emailAddr', sortable: true},
-            {label: '操作', align: 'center', type: 'slot', slotName: 'operator'}
+            {label: '操作', align: 'center', width: 400, type: 'slot', slotName: 'operator'}
           ],
           orderName: 'username'
         },
@@ -80,6 +81,9 @@
 
     },
     methods: {
+      openRoleDlg(id, name) {
+
+      },
       doSearchList() {
         this.getList();
       },
@@ -93,8 +97,8 @@
        * 添加或编辑用户
        * @param row
        */
-      handleEdit(id) {
-        this.$refs.userFormRef.openDialog(id);
+      handleEdit(id, name) {
+        this.$refs.userFormRef.openDialog(id, name);
       },
       /**
        * 删除操作

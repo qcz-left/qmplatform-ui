@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Vue from "vue";
+import Vue from "vue"
 
 axios.defaults.baseURL = '/api'
 Vue.prototype.$axios = axios
@@ -14,7 +14,7 @@ axios.interceptors.response.use(response => {
   let statusCode = response.data.code;
   if (statusCode === 201) {
     // 快过期了，token续期
-    this.$get('/oauth2/refreshToken', {
+    get('/oauth2/refreshToken', {
       refreshToken: window.sessionStorage.getItem('refreshToken')
     }).then(res => {
       window.sessionStorage.setItem('token', res.data.accessToken);

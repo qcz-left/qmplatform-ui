@@ -118,6 +118,7 @@
     background: #666666;
     letter-spacing: 0.2em;
     cursor: pointer;
+    text-align: center;
   }
 
   .el-header {

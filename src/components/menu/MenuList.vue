@@ -12,7 +12,7 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <template v-slot:permissionType="data">
@@ -65,12 +65,12 @@
        * 添加或编辑
        * @param row
        */
-      handleEdit(id) {
+      handleEdit(id, name) {
         this.index++;
         let _self = this;
         const editFormRef = 'editFormRef';
         this.$msgbox({
-          title: id ? '编辑' : '添加',
+          title: id ? '编辑 - ' + name: '添加',
           message: this.$createElement(MenuForm, {
             key: this.index,
             ref: editFormRef

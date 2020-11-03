@@ -11,7 +11,7 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id)">编辑</el-button>
+          <el-button size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
           <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
       </table-pagination>
@@ -111,9 +111,9 @@
        * 添加或编辑
        * @param row
        */
-      handleEdit(id) {
+      handleEdit(id, name) {
         if (id) {
-          this.dialogTitle = '编辑'
+          this.dialogTitle = '编辑 - ' + name
           this.treeOption.queryParams.organizationId = id
           this.$get('/system/organization/getOrgOne/' + id, {}).then(result => {
             this.editForm = result.data;
