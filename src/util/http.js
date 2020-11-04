@@ -33,6 +33,7 @@ axios.interceptors.response.use(response => {
 function redirectLogin(statusCode) {
   if (statusCode === 401) {
     window.sessionStorage.removeItem('token');
+    window.sessionStorage.removeItem('refreshToken');
     window.location.href = '/';
     return;
   }
