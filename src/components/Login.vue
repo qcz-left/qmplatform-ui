@@ -43,8 +43,7 @@
           ],
           // 验证密码是否合法
           password: [
-            {required: true, message: '请输入登录密码', trigger: 'blur'},
-            {min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur'}
+            {required: true, message: '请输入登录密码', trigger: 'blur'}
           ]
         }
       };
@@ -56,7 +55,7 @@
       },
       loginSubmit() {
         this.loading = true;
-        this.$get('/oauth2/login', this.loginForm).then(res => {
+        this.$post('/oauth2/login', this.loginForm).then(res => {
           this.loading = false;
           if (!this.$respSuccess(res)) {
             return this.$message.error('用户名或密码不正确！')

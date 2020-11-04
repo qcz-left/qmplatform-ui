@@ -54,7 +54,7 @@
   import {validEmail, validPhone} from "../../util/validate";
   import {get} from '../../util/http'
   import {respMsg, respSuccess} from "../../util/common";
-  import {Msg} from "../../util/constant";
+  import {Common, Msg} from "../../util/constant";
   import {showLoading} from "../../util/loading";
   import TreeSelect from "../common/TreeSelect";
 
@@ -113,11 +113,12 @@
           ],
           loginname: [
             {required: true, message: '请输入登录名'},
-            {min: 3, max: 15, message: '长度在 3 到 15 个字符'},
+            {min: 3, max: 10, message: '长度在 3 到 15 个字符'},
             {validator: validLoginName, trigger: 'blur'}
           ],
           password: [
-            {required: true, message: '请输入密码'}
+            {required: true, message: '请输入密码'},
+            {min: 3, max: 20, message: '长度在 3 到 20 个字符'}
           ],
           passwordConfirm: [
             {required: true, message: '请输入确认密码'},
@@ -175,8 +176,8 @@
           // 编辑，拷贝row中的值到editForm
           this.$get('/system/user/getUser/' + id, {}).then(data => {
             data.oldPassword = data.password;
-            data.password = '******';
-            data.passwordConfirm = '******';
+            data.password = Common.UN_CHANGED_PASSWORD;
+            data.passwordConfirm = Common.UN_CHANGED_PASSWORD;
             this.editForm = data;
             if (this.editForm.organizationIds) {
               this.editForm.organizationIds = this.editForm.organizationIds[0]

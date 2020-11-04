@@ -1,3 +1,10 @@
+export const Common = {
+  /**
+   * 未改变的密码标识
+   */
+  UN_CHANGED_PASSWORD: '******'
+}
+
 /**
  * 状态类型
  */
