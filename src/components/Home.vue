@@ -12,10 +12,10 @@
             mode="horizontal">
             <el-submenu index="1">
               <template slot="title">你好，{{userName}}</template>
-              <el-menu-item index="1-1">安全设置</el-menu-item>
+              <el-menu-item>安全设置</el-menu-item>
             </el-submenu>
-            <el-menu-item index="2">退出</el-menu-item>
-            <el-menu-item index="3">
+            <el-menu-item @click="logout">退出</el-menu-item>
+            <el-menu-item>
               <el-color-picker title="选择皮肤"></el-color-picker>
             </el-menu-item>
           </el-menu>
@@ -75,7 +75,8 @@
 </template>
 
 <script>
-  import {getAuth, getUserName} from "../util/common";
+  import {getUserName} from "../util/common"
+  import {redirectLogin} from '../util/http'
 
   export default {
     name: "Home.vue",
@@ -96,6 +97,9 @@
       }
     },
     methods: {
+      logout() {
+        redirectLogin()
+      },
       // 收起或展开折叠
       openOrCloseCollapse() {
         this.isCollapse = !this.isCollapse;
@@ -130,7 +134,7 @@
     color: #333;
   }
 
-  .el-header,.el-aside {
+  .el-header, .el-aside {
     background-color: rgb(84, 92, 100);
   }
 

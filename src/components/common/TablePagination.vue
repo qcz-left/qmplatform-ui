@@ -1,10 +1,11 @@
 <template>
   <div class="component-div">
-    <el-table :data="tableData" border stripe
+    <el-table :data="tableData" border stripe height="93%"
               ref="tableRef"
               v-loading="loading"
               @sort-change="sortChange"
               @row-click="rowClick"
+              @row-dblclick="rowDblclick"
               @selection-change="selectChange"
               :row-key="tableConfig.rowKey"
               :tree-props="{children: 'childes'}">
@@ -54,7 +55,18 @@
 
   export default {
     name: "TablePagination",
-    props: ['tableConfig'],
+    props: {
+      tableConfig: {
+        type: Object,
+        default: () => ({})
+      },
+      rowDblclick: {
+        type: Function,
+        default: () => {
+
+        }
+      }
+    },
     data() {
       return {
         tableData: [],
@@ -63,7 +75,7 @@
         pageSizes: this.$parent.tableConfig.pageSizes ? this.$parent.tableConfig.pageSizes : [10, 50, 200, 1000],
         pageSize: this.$parent.tableConfig.pageSize ? this.$parent.tableConfig.pageSize : 10,
         layout: this.$parent.tableConfig.layout ? this.$parent.tableConfig.layout : 'total, sizes, prev, pager, next, jumper',
-        pageable: typeof(this.$parent.tableConfig.pageable) == 'boolean' && !this.$parent.tableConfig.pageable ? false : true,
+        pageable: typeof (this.$parent.tableConfig.pageable) == 'boolean' && !this.$parent.tableConfig.pageable ? false : true,
         treed: this.$parent.tableConfig.treed || false,
         total: 0,
         orderName: this.$parent.tableConfig.orderName ? this.$parent.tableConfig.orderName : '',
@@ -120,10 +132,5 @@
 <style lang="less" scoped>
   .el-pagination {
     padding: 10px;
-  }
-
-  .el-table {
-    height: 93%;
-    overflow-y: auto;
   }
 </style>

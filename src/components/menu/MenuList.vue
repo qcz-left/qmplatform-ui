@@ -9,7 +9,7 @@
     </div>
     <div class="table-div">
       <!-- 菜单列表 -->
-      <table-pagination ref="tableRef" :tableConfig="tableConfig">
+      <table-pagination ref="tableRef" :tableConfig="tableConfig" :rowDblclick="rowDblclick">
         <!--操作-->
         <template v-slot:operator="data">
           <el-button size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
@@ -52,6 +52,9 @@
       }
     },
     methods: {
+      rowDblclick(row, column, event) {
+        // console.log(event)
+      },
       doSearchList() {
         this.getList();
       },

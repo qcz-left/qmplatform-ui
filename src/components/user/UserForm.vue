@@ -18,6 +18,16 @@
                        :queryParams="treeOption.queryParams"
                        :accordion="true"/>
         </el-form-item>
+        <el-form-item label="分配角色">
+          <el-select v-model="editForm.roleIds" multiple placeholder="请选择">
+            <el-option
+              v-for="item in optRoles"
+              :key="item.roleId"
+              :label="item.roleName"
+              :value="item.roleId">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="登录名" prop="loginname">
           <el-input v-model="editForm.loginname" :disabled="disableProp.loginname"/>
         </el-form-item>
@@ -101,7 +111,8 @@
           phone: '',
           emailAddr: '',
           remark: '',
-          organizationIds: ''
+          organizationIds: '',
+          roleIds: []
         },
         treeOption: {
           url: '/system/organization/getOrgList'
@@ -136,7 +147,8 @@
         // 禁用属性
         disableProp: {
           loginname: false
-        }
+        },
+        optRoles: []
       }
     },
     methods: {
@@ -187,6 +199,13 @@
           // 新增
           this.dialogTitle = '添加用户';
         }
+        // 角色下拉框数据
+        this.$get('/system/role/getRoleList', {
+          page: 1,
+          limit: 9999
+        }).then(result => {
+          this.optRoles = result.data.list;
+        });
       },
       /**
        * 关闭时重置
@@ -199,3 +218,9 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+  .el-select {
+    width: 100%;
+  }
+</style>

@@ -21,22 +21,24 @@ axios.interceptors.response.use(response => {
       window.sessionStorage.setItem('refreshToken', res.data.refreshToken);
     })
   }
-  redirectLogin(statusCode);
+  if (statusCode === 401) {
+    redirectLogin();
+  }
   return response;
 }, error => {
-  redirectLogin(error.response.status);
+  if (error.response.status === 401) {
+    redirectLogin();
+  }
 });
 
 /**
  * token过期，重定向到登录页面
  */
-function redirectLogin(statusCode) {
-  if (statusCode === 401) {
-    window.sessionStorage.removeItem('token');
-    window.sessionStorage.removeItem('refreshToken');
-    window.location.href = '/';
-    return;
-  }
+export function redirectLogin(statusCode) {
+  window.sessionStorage.removeItem('token');
+  window.sessionStorage.removeItem('refreshToken');
+  window.location.href = '/';
+  return;
 }
 
 /**
