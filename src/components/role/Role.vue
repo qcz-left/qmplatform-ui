@@ -3,7 +3,7 @@
     <div class="form-div">
       <el-form :inline="true" align="left">
         <el-form-item class="form-operate">
-          <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+          <el-button v-if="authority.save" type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -11,9 +11,9 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" type="warning" icon="el-icon-thumb" @click="openPermissionDlg(data.row.roleId, data.row.roleName)">分配权限</el-button>
-          <el-button size="mini" @click="handleEdit(data.row.roleId, data.row.roleName)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
+          <el-button v-if="authority.allow" size="mini" type="warning" icon="el-icon-thumb" @click="openPermissionDlg(data.row.roleId, data.row.roleName)">分配权限</el-button>
+          <el-button v-if="authority.save" size="mini" @click="handleEdit(data.row.roleId, data.row.roleName)">编辑</el-button>
+          <el-button v-if="authority.delete" size="mini" type="danger" @click="handleDelete(data.row)">删除</el-button>
         </template>
       </table-pagination>
     </div>
@@ -68,7 +68,8 @@
   import {Msg, StatusType} from "../../util/constant";
   import TablePagination from "../common/TablePagination";
   import {showLoading} from "../../util/loading";
-  import {respMsg} from "../../util/common";
+  import {hasAuthority, refreshToken, respMsg} from "../../util/common";
+  import {PrivCode} from "../../util/priv_code";
 
   export default {
     name: "Role",
@@ -106,7 +107,12 @@
           children: 'childes'
         },
         dlgRoleId: '',
-        allotPerTitle: ''
+        allotPerTitle: '',
+        authority: {
+          save: hasAuthority(PrivCode.BTN_CODE_ROLE_SAVE),
+          delete: hasAuthority(PrivCode.BTN_CODE_ROLE_DELETE),
+          allow: hasAuthority(PrivCode.BTN_CODE_ROLE_ALLOT)
+        }
       }
     },
     mounted() {

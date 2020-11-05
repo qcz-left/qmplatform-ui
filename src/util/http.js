@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Vue from "vue"
+import {refreshToken} from "./common"
 
 axios.defaults.baseURL = '/api'
 Vue.prototype.$axios = axios
@@ -13,12 +14,9 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(response => {
   let statusCode = response.data.code;
   if (statusCode === 201) {
-    // 快过期了，token续期
-    get('/oauth2/refreshToken', {
-      refreshToken: window.sessionStorage.getItem('refreshToken')
-    }).then(res => {
-      window.sessionStorage.setItem('token', res.data.accessToken);
-      window.sessionStorage.setItem('refreshToken', res.data.refreshToken);
+    // 快过期了，续期token
+    refreshToken().then(r => {
+
     })
   }
   if (statusCode === 401) {
@@ -34,9 +32,10 @@ axios.interceptors.response.use(response => {
 /**
  * token过期，重定向到登录页面
  */
-export function redirectLogin(statusCode) {
+export function redirectLogin() {
   window.sessionStorage.removeItem('token');
   window.sessionStorage.removeItem('refreshToken');
+  window.sessionStorage.removeItem('authorities');
   window.location.href = '/';
   return;
 }

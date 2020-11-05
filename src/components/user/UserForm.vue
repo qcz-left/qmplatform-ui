@@ -6,6 +6,7 @@
       :visible="centerDialogVisible"
       @close="closeDialog"
       width="30%"
+      top="80px"
       v-dialog-drag
       v-if="centerDialogVisible">
       <el-form :model="editForm" :rules="rules" label-position="right" label-width="100px" ref="editFormRef">

@@ -14,8 +14,8 @@
           <el-button type="primary" @click="doSearchList" icon="el-icon-search">查询</el-button>
         </el-form-item>
         <el-form-item class="form-operate">
-          <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
-          <el-button type="danger" icon="el-icon-delete" @click="batchDelete()">批量删除</el-button>
+          <el-button v-if="authority.save" type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+          <el-button v-if="authority.delete" type="danger" icon="el-icon-delete" @click="batchDelete()">批量删除</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -24,8 +24,8 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id, data.row.username)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
+          <el-button v-if="authority.save" size="mini" @click="handleEdit(data.row.id, data.row.username)">编辑</el-button>
+          <el-button v-if="authority.delete" size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <!--性别-->
         <template v-slot:userSex="data">
@@ -42,8 +42,9 @@
 <script>
   import UserForm from "./UserForm";
   import TablePagination from "../common/TablePagination";
-  import {getAttrFromArray, joinMulti, respMsg} from "../../util/common";
+  import {getAttrFromArray, joinMulti, respMsg, hasAuthority} from "../../util/common";
   import {Msg, StatusType} from "../../util/constant";
+  import {PrivCode} from "../../util/priv_code"
 
   export default {
     name: "UserList",
@@ -74,7 +75,11 @@
           {value: '', label: '全部'},
           {value: '1', label: '男'},
           {value: '2', label: '女'}
-        ]
+        ],
+        authority: {
+          save: hasAuthority(PrivCode.BTN_CODE_USER_SAVE),
+          delete: hasAuthority(PrivCode.BTN_CODE_USER_DELETE)
+        }
       }
     },
     created() {

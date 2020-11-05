@@ -3,7 +3,7 @@
     <div class="form-div">
       <el-form :inline="true" align="left">
         <el-form-item class="form-operate">
-          <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+          <el-button v-if="authority.save" type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -12,8 +12,8 @@
       <table-pagination ref="tableRef" :tableConfig="tableConfig" :rowDblclick="rowDblclick">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
+          <el-button v-if="authority.save" size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
+          <el-button v-if="authority.delete" size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
         <template v-slot:permissionType="data">
           <el-tag v-if="data.value == 1">菜单</el-tag>
@@ -28,6 +28,8 @@
   import TablePagination from "../common/TablePagination";
   import MenuForm from "./MenuForm";
   import {Msg, MsgBoxAction, StatusType} from "../../util/constant";
+  import {hasAuthority} from "../../util/common";
+  import {PrivCode} from "../../util/priv_code";
 
   export default {
     name: "MenuList",
@@ -48,7 +50,11 @@
           treed: true,
           rowKey: 'id'
         },
-        index: 1
+        index: 1,
+        authority: {
+          save: hasAuthority(PrivCode.BTN_CODE_MENU_SAVE),
+          delete: hasAuthority(PrivCode.BTN_CODE_MENU_DELETE)
+        }
       }
     },
     methods: {
