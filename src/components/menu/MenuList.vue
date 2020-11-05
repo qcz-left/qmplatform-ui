@@ -52,8 +52,12 @@
       }
     },
     methods: {
-      rowDblclick(row, column, event) {
-        // console.log(event)
+      /**
+       * 双击展开行
+       * @param row
+       */
+      rowDblclick(row) {
+        this.$refs.tableRef.toggleRowExpansion(row)
       },
       doSearchList() {
         this.getList();
@@ -73,7 +77,7 @@
         let _self = this;
         const editFormRef = 'editFormRef';
         this.$msgbox({
-          title: id ? '编辑 - ' + name: '添加',
+          title: id ? '编辑 - ' + name : '添加',
           message: this.$createElement(MenuForm, {
             key: this.index,
             ref: editFormRef

@@ -87,6 +87,9 @@
       this.getList();
     },
     methods: {
+      toggleRowExpansion(row, expanded) {
+        this.$refs.tableRef.toggleRowExpansion(row, expanded)
+      },
       getList(reset) {
         this.loading = true;
         let queryParams = this.$parent.tableConfig.queryParams || {};
