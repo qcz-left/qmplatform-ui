@@ -1,5 +1,5 @@
 /**
- * 此文件为 Velocity 模板引擎自动生成，请勿修改
+ * 此文件为 Freemarker 模板引擎自动生成，请勿修改
  */
 export const PrivCode = {
   /**
