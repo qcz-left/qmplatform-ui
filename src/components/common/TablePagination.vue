@@ -7,6 +7,7 @@
               @row-click="rowClick"
               @row-dblclick="rowDblclick"
               @selection-change="selectChange"
+              default-expand-all
               :row-key="tableConfig.rowKey"
               :tree-props="{children: 'childes'}">
       <template v-for="(column, index) in tableConfig.columns">

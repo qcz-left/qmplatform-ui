@@ -1,8 +1,8 @@
 <template>
-  <div class="component-div">
+  <div style="height: 100%;">
     <el-container style="height: 100%">
       <!-- 头部 -->
-      <el-header>
+      <el-header class="sys-header">
         <span class="qm-title">Qu管理平台</span>
         <div class="header-right">
           <el-menu
@@ -48,7 +48,7 @@
               <el-menu-item index="/userList"><i class="el-icon-location"></i>用户管理</el-menu-item>
               <el-menu-item index="/role"><i class="el-icon-location"></i>角色管理</el-menu-item>
               <el-menu-item index="/organization"><i class="el-icon-location"></i>部门管理</el-menu-item>
-              <el-menu-item index="2-5"><i class="el-icon-location"></i>图标管理</el-menu-item>
+<!--              <el-menu-item index="2-5"><i class="el-icon-location"></i>图标管理</el-menu-item>-->
               <el-menu-item index="/menuList"><i class="el-icon-location"></i>菜单管理</el-menu-item>
             </el-submenu>
             <el-menu-item index="3">
@@ -67,7 +67,18 @@
         </el-aside>
         <!-- 主体部分 -->
         <el-main>
-          <router-view/>
+          <el-container style="height: 100%;">
+            <el-header height="30px">
+              <el-breadcrumb separator-class="el-icon-arrow-right">
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+              </el-breadcrumb>
+              <el-divider></el-divider>
+            </el-header>
+            <el-main style="height: 100%;">
+              <router-view/>
+            </el-main>
+          </el-container>
         </el-main>
       </el-container>
     </el-container>
@@ -116,6 +127,11 @@
 
 <style lang="less" scoped>
 
+  .el-divider {
+    position: absolute;
+    left: 0;
+  }
+
   .menu-collapse {
     line-height: 30px;
     color: gainsboro;
@@ -125,16 +141,17 @@
     text-align: center;
   }
 
-  .el-header {
+  .sys-header {
     color: #333;
     line-height: 60px;
   }
 
   .el-aside {
     color: #333;
+    z-index: 2;
   }
 
-  .el-header, .el-aside {
+  .sys-header, .el-aside {
     background-color: rgb(84, 92, 100);
   }
 

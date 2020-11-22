@@ -6,7 +6,8 @@
         <img src="../assets/logo.png" alt="">
       </div>
       <!-- 登录表单区域 -->
-      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form" v-loading="loading" element-loading-text="正在登录，请稍后...">
+      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form" v-loading="loading"
+               element-loading-text="正在登录，请稍后...">
         <!-- 用户名 -->
         <el-form-item prop="username">
           <el-input v-model="loginForm.username" prefix-icon="iconfont icon-user"></el-input>
@@ -14,6 +15,11 @@
         <!-- 密码 -->
         <el-form-item prop="password">
           <el-input v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input placeholder="请输入验证码" v-model="loginForm.validateCode">
+            <el-button type="success" :disabled="isDisabled" slot="append" @click="getValidateCode">{{validateCodeBtnName}}</el-button>
+          </el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">
@@ -26,13 +32,16 @@
 </template>
 
 <script>
+  import {respMsg} from "../util/common";
+
   export default {
     data() {
       return {
         loading: false,
         loginForm: {
           username: 'qcz',
-          password: '123456'
+          password: '123456',
+          validateCode: ''
         },
         // 这是表单的验证规则对象
         loginFormRules: {
@@ -45,10 +54,34 @@
           password: [
             {required: true, message: '请输入登录密码', trigger: 'blur'}
           ]
-        }
+        },
+        validateCodeBtnName: '获取验证码',
+        isDisabled: false,
+        time: 60
       };
     },
     methods: {
+      getValidateCode() {
+        let _this = this;
+        this.$get('/oauth2/getValidateCode', {
+          loginName: this.loginForm.username
+        }).then(function (result) {
+          respMsg(result)
+          // 倒计时
+          _this.isDisabled = true;
+          let interval = window.setInterval(function () {
+            _this.validateCodeBtnName = '（' + _this.time + '秒）后重新发送';
+            --_this.time;
+            if (_this.time < 0) {
+              _this.validateCodeBtnName = _this.$options.data().validateCodeBtnName
+              _this.time = _this.$options.data().time
+              _this.isDisabled = false;
+              window.clearInterval(interval);
+            }
+          }, 1000);
+
+        })
+      },
       // 点击重置按钮，重置登录表单
       resetLoginForm() {
         this.$refs.loginFormRef.resetFields();
@@ -58,7 +91,7 @@
         this.$post('/oauth2/login', this.loginForm).then(res => {
           this.loading = false;
           if (!this.$respSuccess(res)) {
-            return this.$message.error('用户名或密码不正确！')
+            return this.$message.error(res.msg || '用户名或密码不正确！')
           }
           window.sessionStorage.setItem('token', res.data.accessToken);
           window.sessionStorage.setItem('refreshToken', res.data.refreshToken);

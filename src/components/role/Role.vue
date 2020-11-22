@@ -54,11 +54,15 @@
         node-key="id"
         ref="tree"
         highlight-current
+        check-strictly
         :props="defaultProps">
       </el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="closePerDialog">取 消</el-button>
         <el-button type="primary" @click="saveRolePermission">确 定</el-button>
+        <el-tooltip content="关联的账号需要重新登录才会使本次分配的权限生效！">
+          <i class="el-icon-question"></i>
+        </el-tooltip>
       </span>
     </el-dialog>
   </div>

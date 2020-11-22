@@ -37,7 +37,8 @@ import {
   Loading,
   Cascader,
   Popover,
-  Tree
+  Tree,
+  Divider
 } from 'element-ui'
 
 MessageBox.setDefaults({
@@ -51,6 +52,7 @@ Dialog.props.closeOnPressEscape.default = false;
 // Dialog.props.center.default = true;
 Input.props.clearable.default = true;
 
+Vue.use(Divider);
 Vue.use(Tree);
 Vue.use(Popover);
 Vue.use(Cascader);

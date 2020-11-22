@@ -78,4 +78,12 @@ export const PrivCode = {
    * 删除菜单
    */
   BTN_CODE_MENU_DELETE: "menu-delete",
+  /**
+   * 保存部门
+   */
+  BTN_CODE_ORG_SAVE: "org-save",
+  /**
+   * 删除部门
+   */
+  BTN_CODE_ORG_DELETE: "org-delete",
 }

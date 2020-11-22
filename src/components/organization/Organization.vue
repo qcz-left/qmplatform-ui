@@ -3,16 +3,16 @@
     <div class="form-div">
       <el-form :inline="true" align="left">
         <el-form-item class="form-operate">
-          <el-button type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
+          <el-button v-if="authority.save" type="success" icon="el-icon-plus" @click="handleEdit()">添加</el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="table-div">
-      <table-pagination ref="tableRef" :tableConfig="tableConfig">
+      <table-pagination ref="tableRef" :tableConfig="tableConfig" :rowDblclick="rowDblclick">
         <!--操作-->
         <template v-slot:operator="data">
-          <el-button size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
+          <el-button v-if="authority.save" size="mini" @click="handleEdit(data.row.id, data.row.name)">编辑</el-button>
+          <el-button v-if="authority.delete" size="mini" type="danger" @click="deleteOne(data.row)">删除</el-button>
         </template>
       </table-pagination>
     </div>
@@ -55,10 +55,11 @@
 
 <script>
   import {Msg, StatusType} from "../../util/constant";
-  import {respMsg} from "../../util/common";
+  import {hasAuthority, respMsg} from "../../util/common";
   import TablePagination from "../common/TablePagination";
   import TreeSelect from "../common/TreeSelect";
   import {showLoading} from "../../util/loading";
+  import {PrivCode} from "../../util/priv_code";
 
   export default {
     name: "Organization",
@@ -97,10 +98,17 @@
           ]
         },
         dialogTitle: '',
-        formVisiable: false
+        formVisiable: false,
+        authority: {
+          save: hasAuthority(PrivCode.BTN_CODE_ORG_SAVE),
+          delete: hasAuthority(PrivCode.BTN_CODE_ORG_DELETE)
+        }
       }
     },
     methods: {
+      rowDblclick(row) {
+        this.$refs.tableRef.toggleRowExpansion(row)
+      },
       /**
        * 获取列表
        */
