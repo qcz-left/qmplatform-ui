@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import {respMsg} from "../util/common";
+  import {respMsg, respSuccess} from "../util/common";
 
   export default {
     data() {
@@ -67,19 +67,20 @@
           loginName: this.loginForm.username
         }).then(function (result) {
           respMsg(result)
-          // 倒计时
-          _this.isDisabled = true;
-          let interval = window.setInterval(function () {
-            _this.validateCodeBtnName = '（' + _this.time + '秒）后重新发送';
-            --_this.time;
-            if (_this.time < 0) {
-              _this.validateCodeBtnName = _this.$options.data().validateCodeBtnName
-              _this.time = _this.$options.data().time
-              _this.isDisabled = false;
-              window.clearInterval(interval);
-            }
-          }, 1000);
-
+          if (respSuccess(result)) {
+            // 倒计时
+            _this.isDisabled = true;
+            let interval = window.setInterval(function () {
+              _this.validateCodeBtnName = '（' + _this.time + '秒）后重新发送';
+              --_this.time;
+              if (_this.time < 0) {
+                _this.validateCodeBtnName = _this.$options.data().validateCodeBtnName
+                _this.time = _this.$options.data().time
+                _this.isDisabled = false;
+                window.clearInterval(interval);
+              }
+            }, 1000);
+          }
         })
       },
       // 点击重置按钮，重置登录表单
@@ -98,6 +99,15 @@
           window.sessionStorage.setItem('nowActive', '/welcome');
           this.$router.push('/');
         });
+      }
+    },
+    watch: {
+      'loginForm.username'(now) {
+        if (!now) {
+          this.isDisabled = true
+        } else {
+          this.isDisabled = false
+        }
       }
     }
   }
